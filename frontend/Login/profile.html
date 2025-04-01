@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Profile Page</h2>
+    <!-- Profile Update Form -->
+<form id="updateProfileForm">
+    <input type="text" id="name" placeholder="Full Name" required />
+    <input type="email" id="email" placeholder="Email (readonly)" readonly />
+    <input type="text" id="phone" placeholder="Phone Number" required />
+    <button type="submit">Update Profile</button>
+</form>
+
+<!-- Change Password Form -->
+<form id="changePasswordForm">
+    <input type="password" id="oldPassword" placeholder="Old Password" required />
+    <input type="password" id="newPassword" placeholder="New Password" required />
+    <button type="submit">Change Password</button>
+</form>
+
+<script src="profile.js"></script>
+
+</body>
+</html>

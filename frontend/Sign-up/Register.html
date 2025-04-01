@@ -1,0 +1,66 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>
+        Register
+    </title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
+    <link href="Register-css.css" rel="stylesheet"/>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+<div class="text-center">
+    <img alt="ASAP Logo" class="mx-auto mb-4" height="100" src="img/logo.png" width="400"/><br>
+    <h1 class="text-4xl font-bold text-[#E46C1E] mt-4">
+        REGISTER
+        
+    </h1>
+    <img alt="ASAP Logo" class="mx-auto mb-4" height="100" src="img/line.png" width="400"/>
+    <form class="mt-8 space-y-4">
+        <div class="flex items-center justify-between">
+            <label class="text-lg font-semibold text-[#E46C1E] mr-4" for="first-name">
+                First Name
+            </label>
+            <input class="border-2 border-[#E46C1E] rounded px-4 py-2 w-64" id="first-name" placeholder="Enter First Name" type="text"/>
+        </div>
+        <div class="flex items-center justify-between">
+            <label class="text-lg font-semibold text-[#E46C1E] mr-4" for="last-name">
+                Last Name
+            </label>
+            <input class="border-2 border-[#E46C1E] rounded px-4 py-2 w-64" id="last-name" placeholder="Enter Last Name" type="text"/>
+        </div>
+        <div class="flex items-center justify-between">
+            <label class="text-lg font-semibold text-[#E46C1E] mr-4" for="email">
+                Email
+            </label>
+            <input class="border-2 border-[#E46C1E] rounded px-4 py-2 w-64" id="email" placeholder="Enter Email address" type="email"/>
+        </div>
+        <div class="flex items-center justify-between">
+            <label class="text-lg font-semibold text-[#E46C1E] mr-4" for="mobile">
+                Mobile
+            </label>
+            <input class="border-2 border-[#E46C1E] rounded px-4 py-2 w-64" id="mobile" placeholder="Enter Mobile Number" type="text"/>
+        </div>
+        <div class="flex items-center justify-between">
+            <label class="text-lg font-semibold text-[#E46C1E] mr-4" for="password">
+                Password
+            </label>
+            <input class="border-2 border-[#E46C1E] rounded px-4 py-2 w-64" id="password" placeholder="Password" type="password"/>
+        </div>
+        <div class="flex items-center justify-between">
+            <label class="text-lg font-semibold text-[#E46C1E] mr-4" for="confirm">
+                Confirm
+            </label>
+            <input class="border-2 border-[#E46C1E] rounded px-4 py-2 w-64" id="confirm" placeholder="Re-type Password" type="password"/>
+        </div> <br>
+        <button class="bg-[#E46C1E] text-white font-semibold px-6 py-2 rounded mt-4" type="submit">
+            SUBMIT
+        </button>
+    </form>
+</div>
+<script src="register.js"></script>
+
+</body>
+</html>

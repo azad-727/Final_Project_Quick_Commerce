@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Reset Password</title>
+</head>
+<body>
+    <h2>Forgot Password</h2>
+    <input type="email" id="emailInput" placeholder="Enter your email">
+    <button onclick="sendOtp()">Send OTP</button>
+
+    <h2>Verify OTP</h2>
+    <input type="text" id="otpInput" placeholder="Enter OTP">
+    <button onclick="verifyOtp()">Verify OTP</button>
+
+    <h2>Reset Password</h2>
+    <input type="password" id="newPasswordInput" placeholder="Enter new password">
+    <button onclick="resetPassword()">Reset Password</button>
+
+    <script>
+        async function sendOtp() {
+            const email = document.getElementById("emailInput").value;
+            const response = await fetch("http://localhost:8080/api/users/forgot-password", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email })
+            });
+            alert(await response.json().message,otp sended succesful);
+        }
+
+        async function verifyOtp() {
+            const email = document.getElementById("emailInput").value;
+            const otp = document.getElementById("otpInput").value;
+            const response = await fetch("http://localhost:8080/api/users/verify-otp", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, otp })
+            });
+            alert(await response.json().message);
+        }
+
+        async function resetPassword() {
+            const email = document.getElementById("emailInput").value;
+            const newPassword = document.getElementById("newPasswordInput").value;
+            const response = await fetch("http://localhost:8080/api/users/reset-password", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, newPassword })
+            });
+            alert(await response.json().message);
+        }
+    </script>
+</body>
+</html>
