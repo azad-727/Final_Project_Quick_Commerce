@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Admin - Add Product - ASAP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Poppins:wght@400;700&display=swap" rel="stylesheet"/>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #fdf6ec; /* Lighter background for admin perhaps */
+        }
+        .poppins {
+            font-family: 'Poppins', sans-serif;
+            color: #E46C1E;
+            font-weight: bold;
+        }
+        .admin-container {
+            background: #FFD196; /* Theme color */
+            border: 4px solid black;
+            box-shadow: 8px 8px 0px black;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        label {
+            color: #bf4f06; /* Darker orange for labels */
+            font-weight: 600; /* Semibold labels */
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="file"],
+        select,
+        textarea {
+            border: 2px solid black;
+            border-radius: 5px;
+            padding: 0.5rem 0.75rem;
+            width: 100%;
+            margin-top: 0.25rem;
+            background-color: bisque; /* Input background */
+            transition: box-shadow 0.2s ease;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #E46C1E;
+            box-shadow: 0 0 0 2px rgba(228, 108, 30, 0.4); /* Focus ring */
+        }
+        textarea {
+            min-height: 80px; /* Default textarea height */
+        }
+        .submit-button {
+            background: #E46C1E; /* Primary orange */
+            color: white;
+            border: 2px solid black;
+            box-shadow: 3px 3px 0px black;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%; /* Full width on mobile */
+        }
+         .submit-button:hover {
+            background: #bf4f06; /* Darker orange on hover */
+            box-shadow: 1px 1px 0px black;
+            transform: translate(2px, 2px);
+         }
+
+         /* Style for file input */
+         input[type="file"] {
+            padding: 0; /* Remove default padding */
+            border: none; /* Remove default border */
+            background: transparent; /* Remove default background */
+         }
+         input[type="file"]::file-selector-button {
+            background: bisque;
+            color: #bf4f06;
+            border: 2px solid black;
+            padding: 0.5rem 0.75rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 1rem;
+             box-shadow: 2px 2px 0px black;
+             transition: all 0.2s ease;
+         }
+          input[type="file"]::file-selector-button:hover {
+             background: #E46C1E;
+             color: white;
+             box-shadow: 1px 1px 0px black;
+             transform: translate(1px, 1px);
+          }
+
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Simple Admin Header -->
+    <header class="p-4 bg-[#FFD196] shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <img alt="ASAP Logo" class="h-10" src="img/logo.png"/> <!-- Adjust path if needed -->
+            <h1 class="text-xl md:text-2xl font-bold text-[#bf4f06]">Admin Panel - Add Product</h1>
+             <a href="#" class="text-[#bf4f06] hover:text-[#E46C1E]">Logout</a> <!-- Example Link -->
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="container mx-auto p-4">
+
+        <div class="admin-container max-w-3xl mx-auto">
+            <h2 class="text-2xl font-bold poppins mb-6 text-center">Enter New Product Details</h2>
+
+            <!-- The Form -->
+            <form id="addProductForm" onsubmit="handleAddProduct(event)">
+
+                <!-- Grid Layout for Form Fields -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+
+                    <!-- Column 1 -->
+                    <div>
+                        <!-- Product Name -->
+                        <div class="mb-4">
+                            <label for="productName" class="block mb-1">Product Name <span class="text-red-600">*</span></label>
+                            <input type="text" id="productName" name="productName" placeholder="e.g., Fresh Muskmelon" required>
+                        </div>
+
+                        <!-- Brand Name -->
+                        <div class="mb-4">
+                            <label for="brandName" class="block mb-1">Brand Name</label>
+                            <input type="text" id="brandName" name="brandName" placeholder="e.g., ASAP Farms">
+                        </div>
+
+                        <!-- Category -->
+                        <div class="mb-4">
+                            <label for="category" class="block mb-1">Category <span class="text-red-600">*</span></label>
+                            <select id="category" name="category" required>
+                                <option value="" disabled selected>-- Select Category --</option>
+                                <option value="paan_corner">Paan Corner</option>
+                                <option value="grocery_kitchen">Grocery & Kitchen</option>
+                                <option value="snacks_drinks">Snacks & Drinks</option>
+                                <option value="beauty_personal_care">Beauty & Personal Care</option>
+                                <option value="household_essentials">Household Essentials</option>
+                                <option value="recipe_ideas">Recipe Ideas</option>
+                                <option value="mobile_accessories">Mobile Accessories</option>
+                                <option value="travel_essentials">Travel Essentials</option>
+                                <option value="eyes_wear">Eyes Wear</option>
+                                <option value="card_board_games">Card & Board Games</option>
+                                <option value="kids_special">Kids Special</option>
+                                <option value="asap_cafe">ASAP Café</option>
+                                <!-- Add more categories as needed -->
+                            </select>
+                        </div>
+
+                         <!-- SKU (Stock Keeping Unit) -->
+                         <div class="mb-4">
+                            <label for="sku" class="block mb-1">SKU (Optional)</label>
+                            <input type="text" id="sku" name="sku" placeholder="e.g., FRT-MSK-500G">
+                        </div>
+
+                         <!-- Stock Quantity -->
+                         <div class="mb-4">
+                            <label for="stock" class="block mb-1">Initial Stock Quantity <span class="text-red-600">*</span></label>
+                            <input type="number" id="stock" name="stock" min="0" placeholder="e.g., 100" required>
+                        </div>
+
+                    </div>
+
+                    <!-- Column 2 -->
+                    <div>
+                        <!-- Weight/Variant Unit -->
+                        <div class="mb-4">
+                            <label for="variantUnit" class="block mb-1">Weight / Unit <span class="text-red-600">*</span></label>
+                            <input type="text" id="variantUnit" name="variantUnit" placeholder="e.g., 500g, 1 pc, 250ml" required>
+                        </div>
+
+                        <!-- Selling Price -->
+                        <div class="mb-4">
+                            <label for="sellingPrice" class="block mb-1">Selling Price (₹) <span class="text-red-600">*</span></label>
+                            <input type="number" id="sellingPrice" name="sellingPrice" min="0" step="0.01" placeholder="e.g., 99.00" required>
+                        </div>
+
+                        <!-- MRP (Original Price) -->
+                        <div class="mb-4">
+                            <label for="mrp" class="block mb-1">MRP (₹) (Optional)</label>
+                            <input type="number" id="mrp" name="mrp" min="0" step="0.01" placeholder="e.g., 120.00 (for discount calculation)">
+                        </div>
+
+                        <!-- Delivery Time -->
+                         <div class="mb-4">
+                            <label for="deliveryTime" class="block mb-1">Estimated Delivery Time</label>
+                            <input type="text" id="deliveryTime" name="deliveryTime" placeholder="e.g., 10-15 minutes">
+                        </div>
+
+                        <!-- Shelf Life -->
+                        <div class="mb-4">
+                            <label for="shelfLife" class="block mb-1">Shelf Life</label>
+                            <input type="text" id="shelfLife" name="shelfLife" placeholder="e.g., 5 days">
+                        </div>
+                    </div>
+                </div> <!-- End Grid -->
+
+                <!-- Fields spanning full width -->
+                 <!-- Product Image -->
+                 <div class="mb-4">
+                    <label for="productImage" class="block mb-1">Product Image <span class="text-red-600">*</span></label>
+                    <input type="file" id="productImage" name="productImage" accept="image/png, image/jpeg, image/webp" required>
+                    <p class="text-xs text-gray-600 mt-1">Upload PNG, JPG, or WEBP format.</p>
+                </div>
+
+                <!-- Product Highlights -->
+                <div class="mb-4">
+                    <label for="highlights" class="block mb-1">Product Highlights</label>
+                    <textarea id="highlights" name="highlights" rows="3" placeholder="Enter key features, one per line (e.g., Freshly sourced\nRich in vitamins\nSweet taste)"></textarea>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-4">
+                    <label for="description" class="block mb-1">Full Description</label>
+                    <textarea id="description" name="description" rows="5" placeholder="Detailed product description..."></textarea>
+                </div>
+
+                 <!-- Manufacturer Details -->
+                 <div class="mb-4">
+                    <label for="manufacturer" class="block mb-1">Manufacturer Details</label>
+                    <textarea id="manufacturer" name="manufacturer" rows="2" placeholder="e.g., Manufactured by: ABC Pvt Ltd, Address... FSSAI No..."></textarea>
+                </div>
+
+                <!-- Country of Origin -->
+                <div class="mb-4">
+                    <label for="origin" class="block mb-1">Country of Origin</label>
+                    <input type="text" id="origin" name="origin" placeholder="e.g., India">
+                </div>
+
+                <!-- Tags/Keywords -->
+                <div class="mb-6">
+                    <label for="tags" class="block mb-1">Tags/Keywords (Optional)</label>
+                    <input type="text" id="tags" name="tags" placeholder="Comma-separated, e.g., fruit, melon, fresh, healthy">
+                    <p class="text-xs text-gray-600 mt-1">Helps with product search.</p>
+                </div>
+
+
+                <!-- Submit Button -->
+                <div class="mt-6 text-center">
+                     <button type="submit" class="submit-button sm:w-auto">
+                         <i class="fas fa-plus-circle mr-2"></i> Add Product
+                     </button>
+                 </div>
+
+            </form>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+     <footer class="mt-8 p-4 bg-[#FFD196] text-[#bf4f06] text-center text-xs md:text-sm">
+        ASAP Admin Panel © 2025
+     </footer>
+
+    <script>
+        // Placeholder for the JavaScript function to handle form submission
+        async function handleAddProduct(event) {
+            event.preventDefault(); // Prevent default HTML form submission
+
+            const form = document.getElementById('addProductForm');
+            const formData = new FormData(form);
+
+            // Optional: Log FormData entries for debugging
+            // for (let [key, value] of formData.entries()) {
+            //     console.log(`${key}:`, value);
+            // }
+
+            // --- API Call Integration ---
+            // Replace '/api/products/add' with your actual backend endpoint
+            const apiUrl = '/api/products/add';
+
+            try {
+                // Show loading state (optional)
+                const submitButton = form.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Adding...';
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    body: formData // FormData handles multipart/form-data for file uploads
+                    // Add headers if needed (e.g., Authorization for JWT)
+                    // headers: {
+                    //   'Authorization': `Bearer ${your_jwt_token}`
+                    // }
+                });
+
+                if (!response.ok) {
+                    // Handle HTTP errors (e.g., 400, 500)
+                    const errorData = await response.json().catch(() => ({ message: 'Failed to add product. Server returned an error.' }));
+                    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json(); // Assuming the backend returns JSON on success
+
+                // --- Success Handling ---
+                console.log('Product added successfully:', result);
+                alert('Product added successfully!');
+                form.reset(); // Clear the form fields
+
+                // Optional: Redirect to product list or view page
+                // window.location.href = '/admin/products';
+
+            } catch (error) {
+                // --- Error Handling ---
+                console.error('Error adding product:', error);
+                alert(`Error adding product: ${error.message}`);
+
+            } finally {
+                 // Restore button state (optional)
+                 const submitButton = form.querySelector('button[type="submit"]');
+                 submitButton.disabled = false;
+                 submitButton.innerHTML = '<i class="fas fa-plus-circle mr-2"></i> Add Product';
+            }
+        }
+    </script>
+
+</body>
+</html>

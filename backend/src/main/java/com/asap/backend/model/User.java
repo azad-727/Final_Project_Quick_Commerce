@@ -15,6 +15,10 @@ public class User {
 
     @Column(nullable = false, unique = true)
     private String email;
+    @Column(nullable = false)
+    private String name;
+    @Column(nullable = false, unique = true)
+    private String phone;
 
     @Column(nullable = false)
     private String password;
@@ -22,9 +26,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role; // ADMIN, CUSTOMER, DELIVERY_AGENT
-    private String name;
-    private String phone;
     private String resetToken;
     private LocalDateTime resetTokenExpiry;
+
 
 }

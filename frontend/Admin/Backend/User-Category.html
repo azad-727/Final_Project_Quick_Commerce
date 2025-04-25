@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <!-- Title will be dynamic based on category -->
+    <title>Category: Grocery & Kitchen - ASAP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/> <!-- Use FA6 for more icons if needed -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Poppins:wght@400;700&display=swap" rel="stylesheet"/>
+    <style>
+        /* Core Styles Copied from product.html & dashboard1.html */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-image: url("img/bg.jpg"); /* Ensure path is correct relative to this file */
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-color: #fff; /* Fallback */
+        }
+        .poppins { font-family: 'Poppins', sans-serif; color: #E46C1E; font-weight: bold; }
+        .bold-text { font-weight: bold; }
+        .hover-dark { transition: background 0.3s ease, color 0.3s ease; }
+        .hover-dark:hover { background: #E46C1E; color: #fff; }
+
+        .account { /* Header account icon style */
+            background: rgb(255, 209, 150); padding: 8px; border: 1px solid black;
+            border-radius: 10px; box-shadow: 3px 3px 0px black; text-align: center;
+        }
+        .cart { /* Header cart button style */
+             background: rgb(255, 209, 150); border: 4px solid black; box-shadow: 5px 5px 0px black;
+        }
+
+        /* Styles for Category Specific Elements */
+        .category-title-section {
+            background-color: rgba(255, 209, 150, 0.8); /* Semi-transparent theme color */
+            padding: 1rem 1.5rem;
+            border-bottom: 4px solid black;
+            box-shadow: 0 5px 0px black;
+            margin-bottom: 1rem;
+        }
+        .category-title {
+            font-size: 1.8rem; /* Large title */
+            font-weight: 700;
+            color: #bf4f06; /* Darker orange from theme */
+            text-shadow: 2px 2px 0px rgba(0,0,0,0.1); /* Subtle shadow */
+        }
+        @media (min-width: 768px) {
+            .category-title { font-size: 2.2rem; }
+        }
+
+        /* Subcategory / Filter Bar */
+        .filter-bar {
+            padding: 0.5rem 1rem; /* Add padding */
+            margin-bottom: 1.5rem;
+        }
+        .subcategory-scroll {
+             display: flex;
+             overflow-x: auto; /* Enable horizontal scroll */
+             padding-bottom: 15px; /* Space for scrollbar */
+             gap: 12px; /* Space between buttons */
+             white-space: nowrap; /* Prevent wrapping */
+             /* Hide scrollbar visually */
+             &::-webkit-scrollbar { display: none; }
+             -ms-overflow-style: none; scrollbar-width: none;
+        }
+        .subcategory-button {
+            display: inline-block; /* Important for no-wrap */
+            background: rgb(255, 209, 150);
+            padding: 10px 20px;
+            border: 3px solid black;
+            border-radius: 10px;
+            box-shadow: 4px 4px 0px black;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #bf4f06;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        .subcategory-button.active, /* Style for active filter */
+        .subcategory-button:hover {
+            background-color: rgb(155, 88, 0);
+            color: aliceblue;
+            box-shadow: 1px 1px 0px black;
+            transform: translate(3px, 3px);
+        }
+        .sort-dropdown { /* Style the select */
+             background: rgb(255, 209, 150);
+             border: 3px solid black; border-radius: 10px;
+             box-shadow: 4px 4px 0px black; padding: 10px 15px;
+             font-size: 0.9rem; font-weight: 600; color: #bf4f06;
+             appearance: none; /* Remove default arrow */
+             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23bf4f06'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd' /%3E%3C/svg%3E"); /* Custom arrow */
+             background-repeat: no-repeat; background-position: right 0.7rem center; background-size: 1.2em 1.2em;
+             padding-right: 2.5rem; /* Space for arrow */
+             cursor: pointer;
+        }
+
+        /* Product Card Styling (Adapting .related-card) */
+         .product-card {
+            background: bisque;
+            border: 3px solid black;
+            box-shadow: 5px 5px 0px black;
+            padding: 15px; /* Consistent padding */
+            border-radius: 10px;
+            text-align: left; /* Align text left */
+            transition: all 0.2s ease;
+            display: flex; flex-direction: column; /* For layout */
+            height: 100%; /* For grid alignment */
+         }
+         .product-card:hover {
+             box-shadow: 2px 2px 0px black;
+             transform: translate(3px, 3px);
+         }
+         .product-image-wrapper { /* Container for image */
+             aspect-ratio: 1 / 1; /* Square aspect ratio */
+             margin-bottom: 10px;
+             background-color: #fff; /* White bg for image */
+             border: 2px solid #ddd;
+             border-radius: 6px;
+             overflow: hidden; /* Ensure image stays contained */
+         }
+         .product-image-wrapper img {
+             width: 100%; height: 100%;
+             object-fit: contain; /* Scale image down nicely */
+             display: block;
+         }
+         .product-details { /* Container for text */
+             flex-grow: 1; /* Allow text to take available space */
+         }
+         .product-name {
+             font-weight: 700; font-size: 0.95rem; color: #333;
+             margin-bottom: 4px; line-height: 1.3;
+             /* Limit to 2 lines with ellipsis */
+             overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+             min-height: 40px; /* Reserve space */
+         }
+         .product-variant { font-size: 0.8rem; color: #666; margin-bottom: 8px; }
+         .product-price-section { /* Price and Add button */
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+             margin-top: auto; /* Push to bottom */
+             padding-top: 10px; /* Space above */
+         }
+         .product-price { font-weight: 700; font-size: 1.1rem; color: black; }
+         .product-mrp { text-decoration: line-through; color: #999; font-size: 0.85rem; margin-left: 5px; }
+         .add-button { /* Adapting .related-add-btn */
+            background: #E46C1E; color: white; border: 2px solid black;
+            box-shadow: 3px 3px 0px black; font-size: 0.8rem;
+            padding: 5px 12px; /* Slightly larger */
+            border-radius: 8px; font-weight: bold; transition: all 0.2s ease;
+            white-space: nowrap; /* Prevent wrapping */
+         }
+          .add-button:hover { background: #bf4f06; box-shadow: 1px 1px 0px black; transform: translate(2px, 2px); }
+          .add-button.added { /* Style when item is added */
+              background: #FFD196; color: #bf4f06;
+              /* Here you might show qty buttons instead, handled by JS */
+          }
+          /* Add this inside the <style> tag in User-Category.html */
+
+.buy-now-button {
+    background: white; /* Different background */
+    color: #E46C1E; /* Theme color text */
+    border: 2px solid #E46C1E; /* Theme color border */
+    box-shadow: 3px 3px 0px black;
+    font-size: 0.8rem;
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    cursor: pointer; /* Ensure pointer cursor */
+}
+
+.buy-now-button:hover {
+    background: #fff8ed; /* Light theme background on hover */
+    color: #bf4f06; /* Darker theme color */
+    border-color: black; /* Black border on hover */
+    box-shadow: 1px 1px 0px black;
+    transform: translate(2px, 2px);
+}
+
+/* Optional: Style for the product link area */
+.product-link-area {
+    text-decoration: none; /* Remove underline from link */
+    color: inherit; /* Inherit text color */
+    display: block; /* Ensure it takes up space */
+    /* You might add a subtle hover effect here if desired */
+}
+.product-link-area:hover .product-name {
+     color: #E46C1E; /* Example: Change name color on hover */
+}
+
+        /* Quantity button styles (copied from product.html) */
+        .qty-button {
+            background: #FFD196; color: #bf4f06; border: 2px solid black;
+            box-shadow: 2px 2px 0px black; font-weight: bold; transition: all 0.2s ease;
+            padding: 4px 8px; /* Match add button height */ font-size: 0.8rem;
+            border-radius: 6px; line-height: 1; /* Align text vertically */
+        }
+        .qty-button:hover { background: #E46C1E; color: white; box-shadow: 1px 1px 0px black; transform: translate(1px, 1px); }
+        .qty-display {
+             background: white; border-top: 2px solid black; border-bottom: 2px solid black;
+             padding: 4px 8px; font-size: 0.8rem; font-weight: bold;
+             min-width: 25px; text-align: center;
+        }
+/* Add this inside the <style> tag */
+    .qty-input {
+    appearance: textfield; /* Remove default number arrows in some browsers */
+    -moz-appearance: textfield; /* Firefox */
+    background-color: white;
+    padding: 0; /* Remove padding if conflicting with sizing */
+    line-height: inherit; /* Inherit line height */
+}
+/* Hide default arrows in Chrome/Safari/Edge */
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Optional: Style adjustments for button container */
+.product-price-section .items-center {
+    min-height: 32px; /* Ensure consistent height for qty controls */
+}
+.product-price-section .add-button {
+    min-height: 32px; /* Match height */
+    line-height: normal; /* Ensure text vertical align */
+}
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- Header (Copied from product.html) -->
+    <header class="p-2 md:p-4 flex flex-wrap justify-between items-center gap-2 md:gap-4 sticky top-0 z-50 bg-[#FFD196]">
+        <div class="flex items-center">
+             <a href="../../Login/dashboard1.html">
+                <img alt="ASAP Logo" class="h-10 md:h-auto w-auto md:w-[200px] mr-2 md:mr-4" src="../img/logo.png"/> <!-- Adjust path -->
+            </a>
+             <div class="hidden sm:block ml-2 md:ml-10 text-red-600 text-sm">
+                 <p class="text-sm md:text-lg font-bold" id="deliveryETA">ETA... <i class="fas fa-chevron-down"></i></p>
+                 <p class="text-xs md:text-sm truncate w-24 md:w-48" id="locationDisplay">Fetching...</p>
+            </div>
+        </div>
+        <div class="w-full md:w-auto flex-grow order-3 md:order-2 mx-auto max-w-lg">
+            <div class="relative w-full">
+              <input class="pl-10 pr-4 py-2 w-full h-[40px] md:h-[50px] rounded-[50px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm md:text-base" placeholder="Search ASAP" type="text"/>
+              <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            </div>
+        </div>
+        <div class="flex items-center gap-2 md:gap-4 order-2 md:order-3">
+             <a href="../../frontend/Profile/main-acc-pg.html" class="text-center cursor-pointer"> <!-- Ensure profile path is correct -->
+                 <div class="w-8 h-8 md:w-10 md:h-10 rounded-full mx-auto account flex items-center justify-center">
+                    <img src="../icon/user.svg" class="h-3/4 w-3/4" alt="Account"> <!-- Adjust path -->
+                 </div>
+                 <p class="text-xs md:text-sm text-red-600 font-bold">Account</p>
+             </a>
+             <a id="cartIconContainer"> <!-- Link to Cart page -->
+                 <button class="flex items-center gap-1 px-3 py-2 md:px-7 md:py-3 rounded-lg focus:outline-none cart h-[40px] md:h-[50px]">
+                     <i class="fas fa-shopping-cart text-sm md:text-base"></i>
+                     <p class="text-xs md:text-sm hidden sm:block"><b>My Cart</b></p>
+                    
+                 </button>
+                  <!-- Quick Cart Popup (Hidden by default) -->
+  <div id="quickCartPopup"
+  class="absolute right-0 top-full mt-2 w-72 md:w-80 bg-white border-2 border-black rounded-lg shadow-[5px_5px_0px_black] z-50 p-4"
+  style="display: none;">
+  <h4 class="text-lg font-bold text-[#bf4f06] border-b pb-2 mb-3">Quick Cart</h4>
+  <div id="quickCartItems" class="max-h-60 overflow-y-auto mb-3">
+      <!-- Quick cart items will be loaded here -->
+      <p class="text-center text-gray-500 text-sm">Your cart is empty.</p>
+  </div>
+  <div class="border-t pt-3">
+      <div class="flex justify-between font-bold mb-3">
+          <span>Subtotal:</span>
+          <span id="quickCartSubtotal">₹0.00</span>
+      </div>
+      <a href="cart.html" class="block w-full text-center bg-[#E46C1E] text-white py-2 px-4 rounded-lg border-2 border-black shadow-[3px_3px_0px_black] hover:bg-[#bf4f06] hover:shadow-[1px_1px_0px_black] hover:translate-x-[2px] hover:translate-y-[2px] transition-all text-sm font-bold">
+         View Cart & Checkout
+      </a>
+  </div>
+</div>
+             </a>
+        </div>
+   </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-4">
+
+        <!-- Category Title -->
+        <div class="category-title-section">
+             <h1 class="category-title" id="pageCategoryTitle">Grocery & Kitchen</h1>
+             <!-- Optional: Breadcrumbs could go here -->
+        </div>
+
+        <!-- Filter/Sort Bar -->
+        <div class="filter-bar flex flex-col sm:flex-row sm:items-center gap-4">
+            <!-- Subcategory Scroll Section -->
+            <div class="subcategory-scroll flex-grow" id="subcategoryContainer">
+            </div>
+            <!-- Sort Dropdown -->
+            <div class="flex-shrink-0"> <!-- Prevent dropdown from shrinking too much -->
+                <select id="sortBy" name="sortBy" class="sort-dropdown">
+                    <option value="relevance">Sort: Relevance</option>
+                    <option value="price_asc">Sort: Price Low-High</option>
+                    <option value="price_desc">Sort: Price High-Low</option>
+                    <option value="name_asc">Sort: Name A-Z</option>
+                </select>
+            </div>
+        </div>
+
+
+        <!-- Product Grid -->
+        <!-- Responsive Columns: 2 on mobile, 3 on sm, 4 on md, 5 on lg -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-5" id="productListingGrid">
+
+             <!-- Product Card Example 1 (Repeat this structure dynamically) -->
+             <div class="product-card" data-product-id="PROD001">
+                <div class="product-image-wrapper">
+                    <img class="product-image" src="img/fruits.png" alt="Fruits & Vegetables"> <!-- Dynamic src/alt -->
+                </div>
+                <div class="product-details">
+                    <h4 class="product-name">Fresh Muskmelon (Kharbooja)</h4> <!-- Dynamic name -->
+                    <p class="product-variant">Approx 800g - 1.2Kg</p> <!-- Dynamic variant -->
+                </div>
+                 <div class="product-price-section">
+                     <p class="product-price">₹55.00 <span class="product-mrp">₹70.00</span></p> <!-- Dynamic price -->
+                     <!-- Add Button / Qty Control (JS will toggle visibility) -->
+                     <button class="add-button" onclick="handleAddToCart(this)">Add</button>
+                     <div class="hidden items-center" data-qty-controls> <!-- Qty controls hidden initially -->
+                        <button class="qty-button minus-button" onclick="decreaseQty(this)">-</button>
+                        <input type="number" class="qty-display">1</span>
+                        <button class="qty-button plus-button" onclick="increaseQty(this)">+</button>
+                     </div>
+                 </div>
+             </div>
+            <!-- /Product Card Example 1 -->
+
+             <!-- Product Card Example 2 -->
+             <div class="product-card" data-product-id="PROD002">
+                <div class="product-image-wrapper">
+                    <img class="product-image" src="img/Diary.jpeg" alt="Amul Gold Milk">
+                </div>
+                <div class="product-details">
+                    <h4 class="product-name">Amul Gold Full Cream Fresh Milk Pouch</h4>
+                    <p class="product-variant">500 ml</p>
+                 </div>
+                 <div class="product-price-section">
+                      <p class="product-price">₹35.00</p>
+                      <button class="add-button" onclick="handleAddToCart(this)">Add</button>
+                      <div class="hidden items-center" data-qty-controls>
+                         <button class="qty-button minus-button" onclick="decreaseQty(this)">-</button>
+                         <span class="qty-display">1</span>
+                         <button class="qty-button plus-button" onclick="increaseQty(this)">+</button>
+                      </div>
+                 </div>
+             </div>
+             <!-- /Product Card Example 2 -->
+
+            <!-- Product Card Example 3 -->
+             <div class="product-card" data-product-id="PROD003">
+                <div class="product-image-wrapper">
+                    <img class="product-image" src="img/Atta.jpeg" alt="Aashirvaad Atta">
+                </div>
+                <div class="product-details">
+                     <h4 class="product-name">Aashirvaad Select Sharbati Atta</h4>
+                     <p class="product-variant">5 Kg</p>
+                 </div>
+                 <div class="product-price-section">
+                      <p class="product-price">₹280.00 <span class="product-mrp">₹310.00</span></p>
+                       <button class="add-button" onclick="handleAddToCart(this)">Add</button>
+                       <div class="hidden items-center" data-qty-controls>
+                          <button class="qty-button minus-button" onclick="decreaseQty(this)">-</button>
+                          <span class="qty-display">1</span>
+                          <button class="qty-button plus-button" onclick="increaseQty(this)">+</button>
+                       </div>
+                 </div>
+             </div>
+             <!-- /Product Card Example 3 -->
+
+             <!-- Add more product cards dynamically here -->
+             <!-- ... -->
+
+
+        </div> <!-- /End Product Grid -->
+
+         <!-- Loading Indicator (Optional) -->
+         <!-- <div id="loadingIndicator" class="text-center py-8 hidden"> Loading Products... </div> -->
+         <!-- No Products Found Message (Optional) -->
+         <!-- <div id="noProductsMessage" class="text-center py-8 hidden"> No products found for this category/filter. </div> -->
+
+    </main>
+
+    <!-- Footer (Copied from product.html) -->
+    <footer class="mt-8 md:mt-12 p-4 bg-[#FFD196] text-[#bf4f06] text-center text-xs md:text-sm">
+        ASAP Quick Commerce © 2025
+    </footer>
+   
+
+    <!-- Link to JS file for interactions -->
+     
+    <script src="../../Login/dashboard-header.js"></script>
+    <script src="../Backend/cartUtils.js"></script>
+    <script src="category.js"></script>
+    
+    <!-- <script>
+        // Basic Add to Cart / Quantity Logic (Move to category.js later)
+
+        function handleAddToCart(button) {
+            const card = button.closest('.product-card');
+            const productId = card.dataset.productId;
+            const addButton = card.querySelector('.add-button');
+            const qtyControls = card.querySelector('[data-qty-controls]');
+            const qtyDisplay = card.querySelector('.qty-display');
+
+            console.log(`Adding product ${productId} to cart`);
+
+            // Hide "Add" button, show quantity controls
+            addButton.classList.add('hidden');
+            qtyControls.classList.remove('hidden');
+            qtyControls.classList.add('flex'); // Ensure it's displayed as flex
+            qtyDisplay.textContent = '1'; // Start quantity at 1
+
+            // --- TODO: Add actual cart update logic here ---
+            // - Update backend/local storage
+            // - Update mini-cart in header (if applicable)
+            updateCartCount(1); // Example function call
+        }
+
+        function increaseQty(button) {
+            const card = button.closest('.product-card');
+            const productId = card.dataset.productId;
+            const qtyDisplay = card.querySelector('.qty-display');
+            let currentQty = parseInt(qtyDisplay.textContent);
+            currentQty++;
+            qtyDisplay.textContent = currentQty;
+
+            console.log(`Increased qty for ${productId} to ${currentQty}`);
+            // --- TODO: Update cart ---
+            updateCartCount(1); // Increment total cart count
+        }
+
+        function decreaseQty(button) {
+            const card = button.closest('.product-card');
+            const productId = card.dataset.productId;
+            const qtyDisplay = card.querySelector('.qty-display');
+            const addButton = card.querySelector('.add-button');
+            const qtyControls = card.querySelector('[data-qty-controls]');
+            let currentQty = parseInt(qtyDisplay.textContent);
+
+            if (currentQty > 1) {
+                currentQty--;
+                qtyDisplay.textContent = currentQty;
+                console.log(`Decreased qty for ${productId} to ${currentQty}`);
+                 // --- TODO: Update cart ---
+                 updateCartCount(-1); // Decrement total cart count
+            } else {
+                // If quantity becomes 0, hide controls, show "Add" button
+                qtyControls.classList.add('hidden');
+                qtyControls.classList.remove('flex');
+                addButton.classList.remove('hidden');
+                console.log(`Removed product ${productId} from cart`);
+                // --- TODO: Remove item from cart ---
+                 updateCartCount(-1); // Decrement total cart count
+            }
+        }
+
+        // Dummy function for cart count update - replace with real logic
+        function updateCartCount(change) {
+             const cartCountElement = document.querySelector('.cart b'); // Find the cart text
+             if (cartCountElement) {
+                 // This is very basic, assumes you only show "My Cart" or "My Cart (N)"
+                 // A better approach involves fetching actual cart count
+                 console.log("Update cart count display - needs real implementation");
+             }
+        }
+
+        // Add JS later to fetch products based on category, handle filter/sort clicks
+    </script>
+     -->
+
+</body>
+</html>

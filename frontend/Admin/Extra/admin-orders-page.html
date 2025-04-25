@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orders - ASAP Admin</title>
+  <style>
+    :root {
+      --primary: #008060;
+      --button-primary: #008060;
+      --button-hover: #004c3f;
+      --text-dark: #202223;
+      --text-base: #303030;
+      --text-light: #6d7175;
+      --text-secondary: #6d7175;
+      --border: #dfe3e8;
+      --border-light: #e1e3e5;
+      --background: #f6f6f7;
+      --background-secondary: #f6f6f7;
+      --white: #ffffff;
+      --badge-success: #b4e6c8;
+      --badge-success-text: #08632b;
+      --badge-warning: #ffea8a;
+      --badge-warning-text: #7a5f01;
+      --badge-info: #d2f3ff;
+      --badge-info-text: #0a6580;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    
+    body {
+      background-color: var(--background);
+      color: var(--text-base);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    
+    .header {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      background-color: var(--white);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .logo {
+      font-size: 20px;
+      font-weight: bold;
+      margin-right: 24px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .logo-icon {
+      margin-right: 8px;
+      font-size: 24px;
+    }
+    
+    .search-container {
+      flex-grow: 1;
+      position: relative;
+      max-width: 480px;
+      margin-right: 16px;
+    }
+    
+    .search-box {
+      width: 100%;
+      padding: 8px 12px 8px 36px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background-color: var(--background);
+      font-size: 14px;
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+    }
+    
+    .search-shortcut {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: var(--border-light);
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-size: 12px;
+      color: var(--text-light);
+    }
+    
+    .user-info {
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+    }
+    
+    .icon-button {
+      background: none;
+      border: none;
+      margin-left: 16px;
+      color: var(--text-light);
+      cursor: pointer;
+      font-size: 20px;
+    }
+    
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #5c6ac4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--white);
+      font-weight: bold;
+      margin-left: 16px;
+    }
+    
+    .layout {
+      display: flex;
+      height: calc(100vh - 56px);
+    }
+    
+    .sidebar {
+      width: 240px;
+      background-color: var(--white);
+      border-right: 1px solid var(--border);
+      overflow-y: auto;
+    }
+    
+    .nav-group {
+      padding: 4px 0;
+    }
+    
+    .nav-group-title {
+      padding: 4px 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 8px 16px;
+      color: var(--text-base);
+      text-decoration: none;
+      font-size: 14px;
+      transition: background-color 0.2s;
+      position: relative;
+    }
+    
+    .nav-item:hover {
+      background-color: var(--background);
+    }
+    
+    .nav-item.active {
+      background-color: var(--background);
+      color: var(--primary);
+      font-weight: 500;
+    }
+    
+    .nav-icon {
+      margin-right: 8px;
+      width: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .nav-badge {
+      margin-left: auto;
+      background-color: #efefef;
+      border-radius: 10px;
+      padding: 1px 8px;
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+    
+    .main-content {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    
+    h1 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .btn {
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+    }
+    
+    .btn-icon {
+      margin-right: 4px;
+    }
+    
+    .btn-primary {
+      background-color: var(--button-primary);
+      color: var(--white);
+      border-color: var(--button-primary);
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--button-hover);
+      border-color: var(--button-hover);
+    }
+    
+    .btn-secondary {
+      background-color: var(--white);
+      color: var(--text-base);
+    }
+    
+    .btn-secondary:hover {
+      background-color: var(--background);
+    }
+    
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    
+    .stat-card {
+      background-color: var(--white);
+      border-radius: 8px;
+      padding: 16px;
+      border: 1px solid var(--border);
+    }
+    
+    .stat-title {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+    }
+    
+    .stat-dash {
+      color: var(--text-light);
+      margin-left: 4px;
+    }
+    
+    .tab-container {
+      background-color: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      background-color: var(--background-secondary);
+      padding: 0 16px;
+    }
+    
+    .tab {
+      padding: 12px 16px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      font-weight: 500;
+      color: var(--text-light);
+    }
+    
+    .tab.active {
+      border-bottom-color: var(--primary);
+      color: var(--primary);
+    }
+    
+    .tab-content {
+      padding: 0;
+    }
+    
+    .table-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .table-search {
+      display: flex;
+      align-items: center;
+    }
+    
+    .table-actions {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .table th, .table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    .table th {
+      font-weight: 500;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+    
+    .table tr:hover td {
+      background-color: var(--background-secondary);
+    }
+    
+    .checkbox-cell {
+      width: 20px;
+    }
+    
+    .checkbox {
+      width: 16px;
+      height: 16px;
+    }
+    
+    .order-id {
+      color: var(--primary);
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    
+    .badge-pending {
+      background-color: var(--badge-warning);
+      color: var(--badge-warning-text);
+    }
+    
+    .badge-paid {
+      background-color: var(--badge-success);
+      color: var(--badge-success-text);
+    }
+    
+    .badge-fulfilled {
+      background-color: var(--badge-success);
+      color: var(--badge-success-text);
+    }
+    
+    .badge-unfulfilled {
+      background-color: var(--badge-warning);
+      color: var(--badge-warning-text);
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      padding: 16px;
+      gap: 8px;
+    }
+    
+    .page-button {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background-color: var(--white);
+      cursor: pointer;
+    }
+    
+    .page-button.active {
+      background-color: var(--primary);
+      color: var(--white);
+      border-color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <div class="logo">
+      <span class="logo-icon">🛒</span>
+      ASAP
+    </div>
+    <div class="search-container">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-box" placeholder="Search">
+      <span class="search-shortcut">CTRL K</span>
+    </div>
+    <div class="user-info">
+      <button class="icon-button">📋</button>
+      <button class="icon-button">🔔</button>
+      <div class="user-avatar">T</div>
+    </div>
+  </div>
+  
+  <!-- Main Layout -->
+  <div class="layout">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="nav-group">
+        <a href="#" class="nav-item">
+          <span class="nav-icon">🏠</span>
+          Home
+        </a>
+        <a href="#" class="nav-item active">
+          <span class="nav-icon">📦</span>
+          Orders
+          <span class="nav-badge">150</span>
+        </a>
+        <a href="#" class="nav-item">
+          <span class="nav-icon">📝</span>
+          Drafts
+        </a>
+        <a href="#" class="nav-item">
+          <span class="nav-icon">🛒</span>
+          Abandoned checkouts
+        </a>
+        <a href="#" class="nav-item">
+          <span class="nav-icon">🏷️</span>
+          Products
+        </a>
+        <a href="#" class="nav-item">
+          <span class="nav-icon">👥</span>
+          Customers
+        </a>
+        <a href="#" class="nav-item">
+          <span class="nav-icon">📄</span>
+          Content
+        </a>
+        <a href="#" class="nav-item">
+          <span class="nav-icon">📊</span>
+          Analytics
+        </a>
+        <a href="#" class="nav-item">
+          <span class="nav-icon">📣</span>
+          Marketing
+        </a>
+        <a href="#" class="nav-item">
+          <span class="nav-icon">💰</span>
+          Discounts
+        </a>
+      </div>
+      
+      <div class="nav-group">
+        <div class="nav-group-title">Sales channels</div>
+        <a href="#" class="nav-item">
+          <span class="nav-icon">🌐</span>
+          Online Store
+        </a>
+        <a href="#" class="nav-item">
+          <span class="nav-icon">💳</span>
+          Point of Sale
+        </a>
+        <a href="#" class="nav-item">
+          <span class="nav-icon">🎬</span>
+          Google & YouTube
+        </a>
+        <a href="#" class="nav-item">
+          <span class="nav-icon">📱</span>
+          Facebook & Instagram
+        </a>
+      </div>
+      
+      <div class="nav-group">
+        <div class="nav-group-title">Apps</div>
+        <a href="#" class="nav-item">
+          <span class="nav-icon">📱</span>
+          ASAP Mobile
+        </a>
+      </div>
+      
+      <div class="nav-group">
+        <a href="#" class="nav-item">
+          <span class="nav-icon">⚙️</span>
+          Settings
+        </a>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="page-header">
+        <h1>Orders</h1>
+        <div class="action-buttons">
+          <button class="btn btn-secondary">Export</button>
+          <button class="btn btn-secondary">
+            More actions
+            <span style="margin-left: 4px;">▼</span>
+          </button>
+          <button class="btn btn-primary">
+            <span class="btn-icon">+</span>
+            Create order
+          </button>
+        </div>
+      </div>
+      
+      <!-- Stats Cards -->
+      <div class="stats-container">
+        <div class="stat-card">
+          <div class="stat-title">Orders</div>
+          <div class="stat-value">0<span class="stat-dash">—</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Items ordered</div>
+          <div class="stat-value">0<span class="stat-dash">—</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Returns</div>
+          <div class="stat-value">₹0<span class="stat-dash">—</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Orders fulfilled</div>
+          <div class="stat-value">0<span class="stat-dash">—</span></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-title">Orders delivered</div>
+          <div class="stat-value">0<span class="stat-dash">—</span></div>
+        </div>
+      </div>
+      
+      <!-- Orders Table -->
+      <div class="tab-container">
+        <div class="tabs">
+          <div class="tab active">All</div>
+          <div class="tab">Unfulfilled</div>
+          <div class="tab">Unpaid</div>
+          <div class="tab">Open</div>
+          <div class="tab">Archived</div>
+          <div class="tab">Return requests</div>
+          <div class="tab" style="margin-left: auto;">+</div>
+        </div>
+        
+        <div class="table-tools">
+          <div class="table-search">
+            <input type="checkbox" class="checkbox">
+          </div>
+          <div class="table-actions">
+            <button class="btn btn-secondary">🔍</button>
+            <button class="btn btn-secondary">≡</button>
+            <button class="btn btn-secondary">↓↑</button>
+          </div>
+        </div>
+        
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="checkbox-cell"><input type="checkbox" class="checkbox"></th>
+              <th>Order</th>
+              <th>Date ↓</th>
+              <th>Customer</th>
+              <th>Channel</th>
+              <th>Total</th>
+              <th>Payment status</th>
+              <th>Fulfillment status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="checkbox"></td>
+              <td><a href="#" class="order-id">INV1563</a></td>
+              <td>Sunday at 12:44 am</td>
+              <td>Naman Aneja</td>
+              <td>FastrrCheckoutV3</td>
+              <td>₹594.03</td>
+              <td><span class="badge badge-pending">⦿ Payment pending</span></td>
+              <td><span class="badge badge-unfulfilled">⦿ Unfulfilled</span></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="checkbox"></td>
+              <td><a href="#" class="order-id">INV1562</a></td>
+              <td>21 Mar at 10:44 am</td>
+              <td>Dalvir .</td>
+              <td>FastrrCheckoutV3</td>
+              <td>₹484.03</td>
+              <td><span class="badge badge-paid">⦿ Paid</span></td>
+              <td><span class="badge badge-fulfilled">⦿ Fulfilled</span></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="checkbox"></td>
+              <td><a href="#" class="order-id">INV1561</a></td>
+              <td>19 Mar at 10:37 pm</td>
+              <td>Mohit Singh</td>
+              <td>FastrrCheckoutV3</td>
+              <td>₹484.03</td>
+              <td><span class="badge badge-paid">⦿ Paid</span></td>
+              <td><span class="badge badge-fulfilled">⦿ Fulfilled</span></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="checkbox"></td>
+              <td><a href="#" class="order-id">INV1560</a></td>
+              <td>15 Mar at 10:04 pm</td>
+              <td>lavya .</td>
+              <td>FastrrCheckoutV3</td>
+              <td>₹721.03</td>
+              <td><span class="badge badge-pending">⦿ Payment pending</span></td>
+              <td><span class="badge badge-fulfilled">⦿ Fulfilled</span></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="checkbox"></td>
+              <td><a href="#" class="order-id">INV1559</a></td>
+              <td>14 Mar at 7:55 pm</td>
+              <td>Anubhav pratap Pratap</td>
+              <td>FastrrCheckoutV3</td>
+              <td>₹1,457.24</td>
+              <td><span class="badge badge-pending">⦿ Payment pending</span></td>
+              <td><span class="badge badge-fulfilled">⦿ Fulfilled</span></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="checkbox"></td>
+              <td><a href="#" class="order-id">INV1558</a></td>
+              <td>12 Mar at 8:12 pm</td>
+              <td>Shyam Ajudiya</td>
+              <td>Online Store</td>
+              <td>₹499.00</td>
+              <td><span class="badge badge-paid">⦿ Paid</span></td>
+              <td><span class="badge badge-fulfilled">⦿ Fulfilled</span></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="checkbox"></td>
+              <td><a href="#" class="order-id">INV1557</a></td>
+              <td>11 Mar at 1:42 pm</td>
+              <td>krishnatomar .</td>
+              <td>FastrrCheckoutV3</td>
+              <td>₹549.00</td>
+              <td><span class="badge badge-paid">⦿ Paid</span></td>
+              <td><span class="badge badge-fulfilled">⦿ Fulfilled</span></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="checkbox"></td>
+              <td><a href="#" class="order-id">INV1556</a></td>
+              <td>10 Mar at 1:27 pm</td>
+              <td>Sankalp K</td>
+              <td>FastrrCheckoutV3</td>
+              <td>₹581.03</td>
+              <td><span class="badge badge-paid">⦿ Paid</span></td>
+              <td><span class="badge badge-fulfilled">⦿ Fulfilled</span></td>
+            </tr>
+            <tr>
+              <td class="checkbox-cell"><input type="checkbox" class="checkbox"></td>
+              <td><a href="#" class="order-id">INV1555</a></td>
+              <td>9 Mar at 10:38 am</td>
+              <td>Princy Shiva</td>
+              <td>FastrrCheckoutV3</td>
+              <td>₹584.03</td>
+              <td><span class="badge badge-paid">⦿ Paid</span></td>
+              <td><span class="badge badge-fulfilled">⦿ Fulfilled</span></td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <div class="pagination">
+          <div class="page-button">«</div>
+          <div class="page-button">‹</div>
+          <div class="page-button active">1</div>
+          <div class="page-button">›</div>
+          <div class="page-button">»</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

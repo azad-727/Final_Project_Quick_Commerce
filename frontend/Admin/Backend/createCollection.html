@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Admin - Create Collection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet"/>
+    <style>
+        /* === CORE STYLES (Copied & Adapted from admin_collections_list.html) === */
+        body {
+            font-family: 'Poppins', sans-serif; background-color: white;
+            &::before { /* Grid Background */
+                --size: 45px; --line: color-mix(in hsl, canvasText, transparent 88%);
+                content: ''; height: 100vh; width: 100vw; position: fixed;
+                background: linear-gradient(90deg,var(--line) 1px,transparent 1px var(--size)) 50% 50%/var(--size) var(--size),linear-gradient(var(--line) 1px,transparent 1px var(--size)) 50% 50%/var(--size) var(--size);
+                mask: linear-gradient(-20deg, transparent 30%, white);
+                top: 0; left: 0; transform-style: flat; pointer-events: none; z-index: -1;
+            }
+        }
+        .text_title { color: rgb(96, 0, 18); font-weight: 700; }
+        .text_mini { color: rgb(7, 0, 84); font-weight: 400; font-size: 0.8rem; }
+
+        /* Sidebar */
+        .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 260px; background-color: #ffffff; border-right: 3px solid black; box-shadow: 5px 0px 15px rgba(0,0,0,0.1); padding-top: 65px; transform: translateX(-100%); transition: transform 0.3s ease-in-out; overflow-y: auto; z-index: 100; &::-webkit-scrollbar { display: none; } -ms-overflow-style: none; scrollbar-width: none; }
+        .sidebar.open { transform: translateX(0); }
+        @media (min-width: 768px) { .sidebar { transform: translateX(0); z-index: 40; } }
+        .sec_cat{ display: block; background: rgb(255, 209, 150); padding: 12px 15px; border: 3px solid black; margin-bottom: 12px; border-radius: 10px; box-shadow: 5px 5px 0px black; font-size: 0.95rem; text-align: center; font-weight: 700; color: #8B4513; transition: all 0.2s ease; cursor: pointer; }
+        .sec_cat:hover, .sec_cat.active { background-color: rgb(155, 88, 0); color: aliceblue; box-shadow: 2px 2px 0px black; transform: translate(3px, 3px); }
+
+        /* Main Content */
+        main { padding: 1rem; padding-top: 75px; width: 100%; transition: margin-left 0.3s ease-in-out; }
+        @media (min-width: 768px) { main { margin-left: 260px; width: calc(100% - 260px); } }
+
+        /* Header */
+        header { background-color: #fff; padding: 0.5rem 1rem; border-bottom: 3px solid black; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; height: 60px; }
+        .header-logo img { height: 40px; width: auto; }
+        .mobile-menu-button { background: none; border: none; color: #8B4513; font-size: 1.6rem; cursor: pointer; padding: 0.5rem; margin-left: -8px;}
+        @media (min-width: 768px) { .mobile-menu-button { display: none; } }
+
+        /* Overlay */
+        #sidebarOverlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); z-index: 90; display: none; transition: opacity 0.3s ease-in-out; opacity: 0; }
+        #sidebarOverlay.active { display: block; opacity: 1; }
+
+        /* --- Create Collection Page Specific Styles --- */
+        .page-header-container { /* Header for title + save */
+            background: rgb(255, 209, 150); padding: 15px 20px; border: 4px solid black;
+            margin-bottom: 20px; border-radius: 10px; box-shadow: 5px 5px 0px black;
+            display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;
+        }
+        .page-title { color: rgb(96, 0, 18); font-weight: 700; font-size: 1.4rem; }
+
+        .save-button { /* Like create-button */
+            background: #E46C1E; color: white; border: 3px solid black;
+            box-shadow: 4px 4px 0px black; font-weight: 700;
+            padding: 8px 15px; border-radius: 8px; cursor: pointer;
+            transition: all 0.2s ease; font-size: 0.85rem;
+            text-transform: uppercase; white-space: nowrap;
+        }
+        .save-button:hover { background: #bf4f06; box-shadow: 1px 1px 0px black; transform: translate(2px, 2px); }
+
+        /* Form Section Styling */
+        .form-section {
+            background: white; /* White background like d1 */
+            padding: 20px; border: 4px solid black; border-radius: 10px;
+            box-shadow: 5px 5px 0px black; /* Shadow like d1 */
+            margin-bottom: 25px; /* Space between sections */
+        }
+        .form-section-title {
+            font-weight: 700; color: #8B4513; border-bottom: 3px solid #f0e0c4;
+            padding-bottom: 8px; margin-bottom: 15px; font-size: 1.1rem;
+        }
+
+        /* Input fields styling */
+        label { color: #8B4513; font-weight: 600; font-size: 0.9rem; display: block; margin-bottom: 5px; }
+        input[type="text"], input[type="number"], input[type="search"], select, textarea {
+            display: block; width: 100%; background: #FFF8DC; /* Light input bg */
+            padding: 8px 12px; border: 3px solid black; border-radius: 8px;
+            box-shadow: 3px 3px 0px black; font-size: 0.95rem;
+            margin-bottom: 1rem; transition: all 0.2s ease; color: #333;
+        }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: #E46C1E; box-shadow: 1px 1px 0px black, 0 0 0 2px #E46C1E; transform: translate(1px, 1px); }
+        textarea { min-height: 120px; } /* Taller text area */
+
+        /* Radio Button Styling */
+        .radio-option { display: flex; align-items: flex-start; margin-bottom: 10px; background-color: #fff8ed; padding: 10px; border: 2px solid black; border-radius: 8px; box-shadow: 3px 3px 0px black; cursor: pointer; }
+        .radio-option input[type="radio"] {
+            appearance: none; /* Hide default */ width: 18px; height: 18px; border: 3px solid black;
+            border-radius: 50%; margin-right: 10px; background-color: white;
+            cursor: pointer; position: relative; top: 2px; flex-shrink: 0;
+        }
+         .radio-option input[type="radio"]:checked { background-color: #E46C1E; border-color: black; }
+         .radio-option input[type="radio"]:checked::after { /* Inner dot */
+            content: ''; display: block; width: 8px; height: 8px; background-color: white;
+            border-radius: 50%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+         }
+         .radio-option label { font-weight: 600; font-size: 0.95rem; margin-bottom: 0; cursor: pointer;}
+         .radio-option p { font-size: 0.85rem; color: #555; margin-top: 2px; cursor: pointer; }
+
+         /* Image Upload Area */
+         .image-upload-box {
+            border: 3px dashed #8B4513; background-color: #fff8ed;
+            border-radius: 10px; padding: 25px; text-align: center;
+         }
+         .image-upload-box .icon { font-size: 2.5rem; color: #8B4513; margin-bottom: 10px;}
+         .image-upload-box p { color: #555; font-size: 0.9rem; margin-bottom: 15px; }
+         .image-upload-button { /* Button to trigger file input */
+             background: #E46C1E; color: white; border: 3px solid black;
+             box-shadow: 4px 4px 0px black; font-weight: 700; padding: 8px 15px;
+             border-radius: 8px; cursor: pointer; transition: all 0.2s ease;
+             font-size: 0.85rem; display: inline-block;
+         }
+         .image-upload-button:hover { background: #bf4f06; box-shadow: 1px 1px 0px black; transform: translate(2px, 2px); }
+         #collectionImageInput { display: none; } /* Hide actual file input */
+
+        /* Products Section specific */
+        .product-search-bar { display: flex; gap: 10px; margin-bottom: 15px;}
+        .product-search-bar input[type="search"] { flex-grow: 1; margin-bottom: 0; }
+        .browse-button { /* Smaller button */
+             background: #FFF8DC; color: #8B4513; border: 3px solid black;
+             box-shadow: 3px 3px 0px black; font-weight: 600; padding: 8px 12px;
+             border-radius: 8px; cursor: pointer; transition: all 0.2s ease; font-size: 0.9rem;
+             white-space: nowrap;
+        }
+        .browse-button:hover { background: #E46C1E; color: white; box-shadow: 1px 1px 0px black; transform: translate(2px, 2px);}
+        .no-products-placeholder { text-align: center; padding: 30px; color: #666; font-size: 0.95rem;}
+        .no-products-placeholder i { font-size: 2rem; margin-bottom: 10px; display: block; color: #ccc;}
+
+        /* Logout Link */
+        .logout { color: #8B4513; font-weight: 700; display: block; margin-top: 1.5rem; padding: 0.5rem; transition: color 0.2s ease; text-align: center; font-size: 0.9rem; }
+        .logout:hover { color: #E46C1E; }
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
+.close{
+    
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    cursor: pointer;   
+}
+.submitProductBtn{
+    margin-left: 400px;
+    background: #E46C1E; color: white; border: 3px solid black;
+             box-shadow: 4px 4px 0px black; font-weight: 700; padding: 8px 15px;
+             border-radius: 8px; cursor: pointer; transition: all 0.2s ease;
+             font-size: 0.85rem; display: inline-block;
+}
+.submitProductBtn:hover{
+    background: #bf4f06; box-shadow: 1px 1px 0px black; transform: translate(2px, 2px); 
+}
+
+.modal-content {
+  background-color: #FFD196;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 5px 5px 15px black;
+  position: relative;
+}
+.sidebar {
+  width: 250px;
+  background-color: #fdf1e1;
+  padding: 15px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.menu-item {
+  margin: 10px 0;
+  cursor: pointer;
+  font-weight: bold;
+  border-top:solid 0.25px #fdf1e1 ;
+}
+
+.menu-item a {
+  text-decoration: none;
+  color: #000;
+}
+.submenu_navbox li{
+    margin-top: 5px;
+    align-items: center;
+    left: 5px;
+    font-size: 15px;
+}
+
+.has-submenu .submenu {
+  display: none;
+  margin-top: 5px;
+  padding-left: 15px;
+}
+
+.has-submenu:hover .submenu {
+  display: block;
+}
+
+.submenu li {
+  margin: 5px 0;
+}
+
+.submenu li a {
+  font-weight: normal;
+}
+
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <div id="sidebarOverlay"></div>
+
+    <!-- Header (Same as previous pages) -->
+    <header>
+         <button class="mobile-menu-button" id="hamburgerButton" aria-label="Open Menu"><i class="fas fa-bars"></i></button>
+        <a href="admin.html" class="header-logo"><img src="../../img/logo.png" alt="ASAP Logo"></a>
+        <a onclick="logout()" class="flex items-center text-orange-600 hover:text-red-700 flex-shrink-0" title="Logout">
+            <i class="fas fa-sign-out-alt text-xl md:text-2xl"></i><span  class="ml-1 font-bold text_mini hidden sm:inline">Logout</span>
+        </a>
+    </header>
+
+    <!-- Sidebar (Same as previous pages) -->
+    <aside id="adminSidebar" class="sidebar">
+         <button id="sidebarCloseButton" class="absolute top-2 right-2 text-gray-600 hover:text-black text-2xl p-2 md:hidden" aria-label="Close Menu">×</button>
+         <div class="text-center mb-6 px-2 pt-4">
+             <div class="w-16 h-16 bg-orange-500 rounded-full mx-auto border-2 border-black flex items-center justify-center" style="background-color: #FFD196; box-shadow: 5px 5px 0px black;">
+                <img src="../../icon/user.svg" height="35px" width="35px" alt="Admin Icon">
+            </div>
+             <div class="font-bold text-lg mt-2" style="color: #8B4513;">Hello Admin</div>
+             <div class="text_mini">Create Collection</div> <!-- Contextual message -->
+         </div>
+         <nav class="px-4">
+             <a class="text_cat" href="admin.html" ><div class="sec_cat">Dashboard</div></a>
+             <a class="text_cat" href="order_man.html"><div class="sec_cat">Order Management</div></a>
+             <div class="menu-item has-submenu">
+                <div class="text_cat sec_cat" onclick="productManagement()">Product Management</div>
+                   <ul class="submenu px-3">
+                       <div class="submenu_navbox"><li><a href="../Login/admin-addProduct.html"> Add Product</a></li></div>
+                       <div class="submenu_navbox"><li><a href="../Backend/showProduct.html">View Products</a></li></div>
+                       <div class="submenu_navbox"><li><a href="../Backend/Cateory.html">Collection</a></li></div>
+                     </ul></div>
+             <a class="text_cat" href="use_man.html"><div class="sec_cat">User Management</div></a>
+             <a class="text_cat" href="delivery_man.html" ><div class="sec_cat">Delivery Partners</div></a>
+             <a class="text_cat" href="Report.html" ><div class="sec_cat">Reports & Analytics</div></a>
+             <a class="text_cat" href="coupon.html" ><div class="sec_cat">Coupons & Promotions</div></a>
+             <a class="text_cat" href="customer.html" ><div class="sec_cat">Customer Support</div></a>
+             <center><a class="logout" onclick="logout()">Log Out</a></center>
+         </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main id="mainContent">
+
+        <form id="createCollectionForm"> <!-- Wrap entire content in a form -->
+            <!-- Page Header with Save Button -->
+            <div class="page-header-container">
+                <h1 class="page-title">Create collection</h1>
+                <button type="submit" class="save-button">
+                    <i class="fas fa-save mr-1"></i> Save collection
+                </button>
+            </div>
+
+            <!-- Main Grid Layout (2 columns on large screens) -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+                <!-- Left Column (Primary Details) -->
+                <div class="lg:col-span-2 space-y-6">
+
+                    <!-- Title & Description Section -->
+                    <div class="form-section">
+                        <div>
+                            <label for="collectionTitle">Title</label>
+                            <input type="text" id="collectionTitle" name="title" placeholder="e.g. Summer collection, Under $100, Staff picks" required>
+                        </div>
+                        <div>
+                            <label for="collectionDescription">Description</label>
+                            <textarea id="collectionDescription" name="description" placeholder="Describe the collection..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Collection Type Section -->
+                    <div class="form-section">
+                         <h3 class="form-section-title">Collection type</h3>
+                         <div class="radio-option">
+                              <input type="radio" id="typeManual" name="type" value="manual" checked>
+                              <div>
+                                   <label for="typeManual">Manual</label>
+                                   <p>Add products to this collection one by one.</p>
+                               </div>
+                          </div>
+                          <!-- Conditional fields for 'Smart' type would go here (hidden by default) -->
+                    </div>
+
+                     <!-- Products Section -->
+                     <div class="form-section">
+                          <h3 class="form-section-title">Products</h3>
+                          <div class="product-search-bar" id="searchProductBar">
+                               <input type="search" placeholder="Search products...">
+                               <button type="button" class="browse-button">Browse</button>
+                          </div>
+                          
+                            <!-- Where Selected Products Appear -->
+                          
+                          Placeholder - Product list or conditions would go here
+                          <div>
+                            <div id="selectedProductsContainer" class="mt-4"> azad</div>   
+                            <i class="fas fa-box-open"></i>
+                               There are no products in this collection yet. <br> Search or browse to add products (for manual type).
+                          </div>
+                          
+                     </div>
+
+                     <!-- Search Engine Listing Preview -->
+                     <div class="form-section">
+                         <h3 class="form-section-title">Search engine listing</h3>
+                         <p class="text-sm text-gray-600 mb-4">Add a title and description to see how this collection might appear in search engine results.</p>
+                         <div>
+                              <label for="seoTitle">Page title</label>
+                              <input type="text" id="seoTitle" name="seoTitle" placeholder="SEO Title (Optional)">
+                         </div>
+                         <div>
+                               <label for="seoDescription">Meta description</label>
+                               <textarea id="seoDescription" name="seoDescription" rows="3" placeholder="SEO Description (Optional)"></textarea>
+                          </div>
+                      </div>
+
+                </div> <!-- End Left Column -->
+
+                <!-- Right Column (Metadata) -->
+                <div class="lg:col-span-1 space-y-6">
+
+                     <!-- Publishing Section (Simplified) -->
+                     <div class="form-section">
+                          <h3 class="form-section-title">Publishing</h3>
+                          <p class="text-sm text-gray-600">Manage where this collection will be available. (Details managed elsewhere)</p>
+                          <!-- Placeholder for actual channel toggles -->
+                          <div class="mt-2 space-y-1">
+                              <p class="font-medium text-gray-800"><i class="fas fa-circle-check text-green-500 mr-1"></i> Online Store</p>
+                              <p class="text-gray-500"><i class="fas fa-clock mr-1"></i> Other channels pending setup</p>
+                          </div>
+                      </div>
+
+                      <!-- Image Section -->
+                      <div class="form-section">
+                          <h3 class="form-section-title">Image</h3>
+                          <div class="image-upload-box">
+                              <label for="collectionImageInput" class="cursor-pointer"> <!-- Label wraps content -->
+                                  <i class="icon fas fa-image"></i>
+                                  <p>Drop an image here, or click to upload.</p>
+                                  <span class="image-upload-button">Add image</span>
+                              </label>
+                               <input type="file" id="collectionImageInput" name="imageUrl" accept="image/*">
+                          </div>
+                          <!-- Image preview area could be added here -->
+                      </div>
+
+                       <!-- Theme Template (Simplified) -->
+                       <div class="form-section">
+                           <h3 class="form-section-title">Theme template</h3>
+                            <label for="themeTemplate">Assign a template</label>
+                            <select id="themeTemplate" name="themeTemplate">
+                                <option value="default">Default collection</option>
+                                <!-- Add other template options if available -->
+                            </select>
+                        </div>
+
+                </div> <!-- End Right Column -->
+
+            </div> <!-- End Main Grid -->
+            
+        </form>
+    </main>
+
+    <!-- Link shared JS for sidebar -->
+    <script src="AdminSharedCollection.js"></script>
+    <!-- Add specific JS for this page later for form handling, image preview etc. -->
+    <script>
+        // Basic JS Example: Trigger file input when button is clicked
+        document.querySelector('.image-upload-button')?.addEventListener('click', () => {
+             document.getElementById('collectionImageInput')?.click();
+         });
+         // Add JS for form submission (similar to add product)
+         document.getElementById('createCollectionForm')?.addEventListener('submit', (event) => {
+            event.preventDefault();
+            alert('(Simulated) Saving Collection...');
+            // Add actual form submission logic here (FormData, fetch, etc.)
+            console.log("Form submitted");
+            // const formData = new FormData(event.target);
+            // console.log(Object.fromEntries(formData.entries()));
+         });
+    </script>
+    <script src="createCollection1.js"></script>
+    
+    <!-- 🔍 Product Search Popup Modal -->
+    <div id="productSearchModal" class="modal" style="display: none;">
+    <div class="modal-content" style="width: 600px; max-height: 80vh; overflow-y: auto;">
+        <h2>Search & Select Products</h2>
+        <span class="close" id="closeProductModal">&times;</span>
+      
+      <input type="text" id="searchInput" placeholder="Search products..." style="width: 90%; padding: 10px; margin: 10px 0;" />
+  
+      <div id="searchResults"></div>
+  
+      <button id="submitProductSelection" class="submitProductBtn"style="margin-top: 15px;">Add Selected Products</button>
+    </div>
+  </div>
+  
+  
+</body>
+</html>

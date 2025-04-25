@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Product Details - ASAP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Poppins:wght@400;700&display=swap" rel="stylesheet"/>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* Consider removing fixed background for mobile performance or using a simpler mobile background */
+            background-image: url("img/bg.jpg");
+            background-attachment: fixed; /* 'fixed' can be problematic on mobile, consider 'scroll' or removing */
+            background-repeat: no-repeat;
+            background-size: cover; /* Ensure it covers the screen */
+            background-color: #fff; /* Fallback background */
+        }
+        .poppins {
+            font-family: 'Poppins', sans-serif;
+            color: #E46C1E;
+            font-weight: bold;
+        }
+        .bold-text {
+            font-weight: bold;
+        }
+        .hover-dark {
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        .hover-dark:hover {
+            background: #E46C1E; /* Primary orange for hover */
+            color: #fff;
+        }
+
+        .account { /* Style adjusted slightly for potential size changes */
+            background: rgb(255, 209, 150);
+            padding: 8px; /* Slightly smaller padding */
+            border: 1px solid black;
+            /* margin-bottom: 2px; */ /* Handled by flex gap potentially */
+            border-radius: 10px;
+            box-shadow: 3px 3px 0px black;
+            text-align: center;
+             /* width: 50px; */ /* Width controlled by container now */
+        }
+         .cart { /* Specific cart button style from dashboard, if needed */
+             background: rgb(255, 209, 150);
+             border: 4px solid black;
+             box-shadow: 5px 5px 0px black;
+         }
+        .cart-button {
+            background: #E46C1E; /* Primary orange */
+            color: white;
+            border: 2px solid black;
+            box-shadow: 3px 3px 0px black;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            text-align: center; /* Ensure text center */
+        }
+        .cart-button:hover {
+            background: #bf4f06; /* Darker orange on hover */
+            box-shadow: 1px 1px 0px black;
+            transform: translate(2px, 2px);
+        }
+        .qty-button {
+            background: #FFD196; /* Lighter orange */
+            color: #bf4f06;
+            border: 2px solid black;
+            box-shadow: 2px 2px 0px black;
+            font-weight: bold;
+            transition: all 0.2s ease;
+        }
+         .qty-button:hover {
+            background: #E46C1E;
+            color: white;
+            box-shadow: 1px 1px 0px black;
+            transform: translate(1px, 1px);
+         }
+        .product-image-container {
+            background: bisque;
+            border: 3px solid black;
+            box-shadow: 8px 8px 0px black;
+            padding: 10px /* Responsive padding */
+        }
+         .info-section {
+            background: #FFD196; /* Light orange background */
+            border: 3px solid black;
+            box-shadow: 5px 5px 0px black;
+            border-radius: 10px;
+            padding: 15px; /* Responsive padding */
+            margin-top: 20px;
+         }
+         .related-card {
+            background: bisque;
+            border: 3px solid black;
+            box-shadow: 5px 5px 0px black;
+            padding: 10px; /* Slightly less padding */
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.2s ease;
+         }
+         .related-card:hover {
+             box-shadow: 2px 2px 0px black;
+             transform: translate(3px, 3px);
+         }
+         .related-add-btn {
+            background: #E46C1E;
+            color: white;
+            border: 1px solid black;
+            box-shadow: 2px 2px 0px black;
+            font-size: 0.8rem;
+            padding: 4px 8px;
+         }
+          .related-add-btn:hover {
+            background: #bf4f06;
+            box-shadow: 1px 1px 0px black;
+            transform: translate(1px, 1px);
+          }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- Header -->
+    <header class="p-2 md:p-4 flex flex-wrap justify-between items-center gap-2 md:gap-4 sticky top-0 z-50 bg-[#FFD196]">
+        <!-- Logo & Location -->
+        <div class="flex items-center">
+             <a href="../../Login/dashboard1.html"> <!-- Link the logo -->
+                <img alt="ASAP Logo" class="h-10 md:h-auto w-auto md:w-[200px] mr-2 md:mr-4" src="../../img/logo.png"/> <!-- Responsive logo size -->
+            </a>
+             <div class="hidden sm:block ml-2 md:ml-10 text-red-600 text-sm"> <!-- Hide location on very small screens -->
+                 <p class="text-sm md:text-lg font-bold" id="deliveryETA">
+                     ETA... <i class="fas fa-chevron-down"></i>
+                 </p>
+                 <p class="text-xs md:text-sm truncate w-24 md:w-48" id="locationDisplay">
+                     Fetching...
+                 </p>
+            </div>
+        </div>
+
+        <!-- Search -->
+        <div class="w-full md:w-auto flex-grow order-3 md:order-2 mx-auto max-w-lg"> <!-- Search takes full width on mobile, centered -->
+            <div class="relative w-full">
+              <input class="pl-10 pr-4 py-2 w-full h-[40px] md:h-[50px] rounded-[50px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm md:text-base" placeholder="Search ASAP" type="text"/>
+              <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            </div>
+        </div>
+
+        <!-- Account & Cart -->
+        <div class="flex items-center gap-2 md:gap-4 order-2 md:order-3">
+             <a onclick="profile()" href="../../Profile/main-acc-pg.html" class="text-center cursor-pointer">
+                 <div class="w-8 h-8 md:w-10 md:h-10 bg-orange-500 rounded-full mx-auto account flex items-center justify-center"> <!-- Centered icon -->
+                    <img src="../../icon/user.svg" class="h-3/4 w-3/4" alt="Account"> <!-- Scaled SVG -->
+                 </div>
+                 <p class="text-xs md:text-sm text-red-600 font-bold">Account</p> <!-- Smaller text on mobile -->
+             </a>
+             <a href="#">
+                 <button class="flex items-center gap-1 px-3 py-2 md:px-7 md:py-3 rounded-lg focus:outline-none cart h-[40px] md:h-[50px]"> <!-- Responsive padding & height -->
+                     <i class="fas fa-shopping-cart text-sm md:text-base"></i>
+                     <p class="text-xs md:text-sm hidden sm:block"><b>My Cart</b></p> <!-- Hide text on smallest screen -->
+                 </button>
+             </a>
+        </div>
+   </header>
+
+    <!-- Breadcrumbs -->
+    <div class="container mx-auto px-4 py-2 text-xs sm:text-sm text-gray-600"> <!-- Smaller text on mobile -->
+        <a href="../../login/dashboard1.html" class="hover:text-[#E46C1E]">Home</a> >
+        <a href="#" class="hover:text-[#E46C1E]">Grocery</a> > <!-- Shorter category name for mobile -->
+        <span class="font-semibold text-gray-800" id="productName">Product Name</span>
+    </div>
+
+    <!-- Main Product Section -->
+    <main class="container mx-auto p-4">
+        <!-- Use flex-col by default (mobile), md:flex-row for medium screens up -->
+        <div class="flex flex-col md:flex-row gap-6 md:gap-8">
+
+            <!-- Product Image -->
+            <!-- w-full on mobile, specific widths on larger screens -->
+            <div class="w-full md:w-1/2 lg:w-2/5 flex justify-center items-start">
+                <div class="product-image-container w-full max-w-sm md:max-w-none mx-auto"> <!-- Max width on mobile -->
+                    <img src="../img/Muskmelon.webp" alt="Product Name" class="w-full h-auto object-cover rounded-md">
+                </div>
+            </div>
+
+            <!-- Product Details -->
+            <!-- w-full on mobile, specific widths on larger screens -->
+            <div class="w-full md:w-1/2 lg:w-3/5">
+                 <!-- Responsive text size for Title -->
+                <h1 class="text-2xl md:text-3xl font-bold poppins mb-1 md:mb-2" id="productName">Product Name Here</h1>
+                <p class="text-sm md:text-base text-gray-500 mb-3 md:mb-4"id="brandName">Brand Name</p>
+
+                <!-- Variant / Weight Selection -->
+                <div class="mb-4">
+                    <label for="variant" class="block text-xs md:text-sm font-medium text-gray-700 mb-1">Select Weight/Variant:</label>
+                    <!-- Make select full width on mobile, half on desktop -->
+                    <select id="variant" name="variant" class="w-full md:w-1/2 p-2 border border-gray-300 rounded-md focus:ring-[#E46C1E] focus:border-[#E46C1E] text-sm md:text-base">
+                        <option>500g</option>
+                        <option>1kg</option>
+                        <option>2kg Pack</option>
+                    </select>
+                </div>
+
+                <!-- Price -->
+                <div class="mb-4 md:mb-6 flex items-center flex-wrap gap-x-2"> <!-- Flex wrap for smaller screens -->
+                    <!-- Responsive text size for Price -->
+                    <span class="text-2xl md:text-3xl font-bold text-black" id="productPrice">₹99.00</span>
+                    <span class="text-base md:text-lg text-gray-500 line-through" id="productMrp">₹120.00</span>
+                    <span class="text-xs md:text-sm font-semibold text-green-600 bg-green-100 px-2 py-1 rounded">17% OFF</span>
+                </div>
+
+                <!-- Delivery Info -->
+                <div class="mb-4 md:mb-6 p-2 md:p-3 bg-gray-100 rounded-md border border-gray-200 flex items-center gap-2">
+                    <i class="fas fa-truck text-[#E46C1E] text-sm md:text-base"></i>
+                    <!-- Responsive text size -->
+                    <span class="text-xs md:text-sm text-gray-700">Delivery in <span class="font-bold">10-15 minutes</span></span>
+                </div>
+
+                <!-- Add to Cart Button & Quantity -->
+                 <!-- flex-col on small screens, flex-row on medium+, wider button on mobile -->
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4">
+                    <div class="flex items-center border border-black rounded-md justify-center sm:justify-start" style="box-shadow: 3px 3px 0px black;"> <!-- Centered on small screens when stacked -->
+                        <button class="qty-button rounded-l-md px-4 py-2 md:px-3">-</button> <!-- Larger tap area on mobile -->
+                        <span class="px-4 py-2 bg-white text-center w-12 font-bold text-sm md:text-base" id="quantity">1</span>
+                        <button class="qty-button rounded-r-md px-4 py-2 md:px-3">+</button> <!-- Larger tap area on mobile -->
+                    </div>
+                     <!-- Button takes full width on mobile, auto on larger; responsive padding -->
+                    <button class="cart-button px-6 py-3 md:px-8 rounded-md w-full sm:w-auto flex-grow sm:flex-grow-0 text-sm md:text-base" onclick="/* add to cart */">
+                        <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
+                    </button>
+                </div>
+
+                <!-- Short Description / Key Points -->
+                <div class="mt-6 md:mt-8 text-gray-700">
+                    <h3 class="text-base md:text-lg font-semibold mb-2 text-[#bf4f06]">Product Highlights:</h3>
+                    <ul class="list-disc list-inside space-y-1 text-xs md:text-sm" id="bulletPoint"> <!-- Responsive text size -->
+                        <li>Highlight point one about the product.</li>
+                        <li>Another key feature or benefit.</li>
+                        <li>Freshly sourced / Long shelf life etc.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Information Section -->
+        <div class="info-section mt-8 md:mt-12">
+             <!-- Responsive text size -->
+            <h2 class="text-xl md:text-2xl font-bold mb-4 text-[#bf4f06]">Product Information</h2>
+            <div class="text-xs md:text-sm text-gray-800 space-y-3 md:space-y-4"> <!-- Responsive text size & spacing -->
+                <div>
+                    <h4 class="font-semibold mb-1">Description</h4>
+                    <p id="description">Detailed description of the product goes here. Talk about its origin, usage, benefits, and anything else relevant to the customer. Keep it informative but concise.</p>
+                </div>
+                 <div>
+                    <h4 class="font-semibold mb-1">Shelf Life</h4>
+                    <p id="shelfLife">Approximately 5 days from the date of packaging. Keep refrigerated.</p>
+                 </div>
+                <div>
+                    <h4 class="font-semibold mb-1">Manufacturer Details</h4>
+                    <p id="manufacturer">Manufactured by: ABC Pvt Ltd, Address Line 1, City, State, Pin Code. FSSAI Lic. No. XXXXXXXXXXXXXX</p>
+                 </div>
+                <div>
+                    <h4 class="font-semibold mb-1">Country of Origin</h4>
+                    <p>India</p>
+                 </div>
+            </div>
+        </div>
+
+        <!-- Related Products / You Might Also Like -->
+        <div class="mt-8 md:mt-12">
+            <h2 class="text-xl md:text-2xl font-bold mb-4 md:mb-6 text-[#bf4f06]">You Might Also Like</h2>
+            <!-- Responsive grid columns -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
+                <!-- Related Product Card Example (keep content concise for mobile) -->
+                <div class="related-card">
+                    <img src="https://via.placeholder.com/150x150.png?text=Related+1" alt="Related Product 1" class="w-full h-auto object-cover mb-2 rounded-md">
+                     <!-- Responsive text sizes -->
+                    <h4 class="text-xs sm:text-sm font-semibold mb-1 truncate">Related Product Name 1 Long Name Truncates</h4>
+                    <p class="text-[10px] sm:text-xs text-gray-500 mb-1 sm:mb-2">500g</p>
+                    <p class="text-xs sm:text-sm font-bold mb-2">₹45.00</p>
+                    <button class="related-add-btn rounded-md hover-dark w-full py-1 md:py-auto" onclick="/* add related */">Add</button> <!-- Ensure button text fits -->
+                </div>
+                <!-- Repeat for other related products -->
+                 <div class="related-card">
+                    <img src="https://via.placeholder.com/150x150.png?text=Related+2" alt="Related Product 2" class="w-full h-auto object-cover mb-2 rounded-md">
+                    <h4 class="text-xs sm:text-sm font-semibold mb-1 truncate">Related Product 2</h4>
+                    <p class="text-[10px] sm:text-xs text-gray-500 mb-1 sm:mb-2">1 pc</p>
+                    <p class="text-xs sm:text-sm font-bold mb-2">₹110.00</p>
+                    <button class="related-add-btn rounded-md hover-dark w-full py-1 md:py-auto" onclick="/* add related */">Add</button>
+                </div>
+                 <div class="related-card">
+                    <img src="https://via.placeholder.com/150x150.png?text=Related+3" alt="Related Product 3" class="w-full h-auto object-cover mb-2 rounded-md">
+                    <h4 class="text-xs sm:text-sm font-semibold mb-1 truncate">Related Product 3</h4>
+                    <p class="text-[10px] sm:text-xs text-gray-500 mb-1 sm:mb-2">250ml</p>
+                    <p class="text-xs sm:text-sm font-bold mb-2">₹30.00</p>
+                    <button class="related-add-btn rounded-md hover-dark w-full py-1 md:py-auto" onclick="/* add related */">Add</button>
+                </div>
+                 <div class="related-card"> <!-- Only shows on sm screens and up -->
+                    <img src="https://via.placeholder.com/150x150.png?text=Related+4" alt="Related Product 4" class="w-full h-auto object-cover mb-2 rounded-md">
+                    <h4 class="text-xs sm:text-sm font-semibold mb-1 truncate">Related Product 4</h4>
+                    <p class="text-[10px] sm:text-xs text-gray-500 mb-1 sm:mb-2">Combo</p>
+                    <p class="text-xs sm:text-sm font-bold mb-2">₹199.00</p>
+                    <button class="related-add-btn rounded-md hover-dark w-full py-1 md:py-auto" onclick="/* add related */">Add</button>
+                </div>
+                <div class="related-card"> <!-- Only shows on md screens and up -->
+                    <img src="https://via.placeholder.com/150x150.png?text=Related+5" alt="Related Product 5" class="w-full h-auto object-cover mb-2 rounded-md">
+                    <h4 class="text-xs sm:text-sm font-semibold mb-1 truncate">Related Product 5</h4>
+                    <p class="text-[10px] sm:text-xs text-gray-500 mb-1 sm:mb-2">1 unit</p>
+                    <p class="text-xs sm:text-sm font-bold mb-2">₹75.00</p>
+                    <button class="related-add-btn rounded-md hover-dark w-full py-1 md:py-auto" onclick="/* add related */">Add</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="mt-8 md:mt-12 p-4 bg-[#FFD196] text-[#bf4f06] text-center text-xs md:text-sm">
+        ASAP Quick Commerce © 2025 <!-- Updated year -->
+    </footer>
+
+    <script src="product.js">
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASAP - Neo Brutalism</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f0f0f0;
+        }
+        .neo-card {
+            background: white;
+            border: 3px solid black;
+            box-shadow: 8px 8px 0px black;
+            padding: 20px;
+            border-radius: 0;
+        }
+        .neo-button {
+            background: black;
+            color: white;
+            font-weight: bold;
+            padding: 10px 20px;
+            border: 3px solid black;
+            box-shadow: 4px 4px 0px black;
+            transition: all 0.2s;
+        }
+        .neo-button:hover {
+            background: white;
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <header class="p-6 flex justify-between items-center bg-yellow-400 border-black border-b-4 shadow-lg">
+        <img src="img/logo.png" alt="ASAP Logo" class="w-40">
+        <h1 class="text-3xl font-bold uppercase">ASAP Delivery</h1>
+        <button class="neo-button">My Cart <i class="fas fa-shopping-cart"></i></button>
+    </header>
+
+    <div class="flex">
+        <aside class="w-1/4 p-6 bg-red-500 text-white">
+            <ul class="space-y-4">
+                <li class="neo-card">Paan Corner</li>
+                <li class="neo-card">Grocery & Kitchen</li>
+                <li class="neo-card">Snacks & Drinks</li>
+                <li class="neo-card">Beauty & Personal Care</li>
+                <li class="neo-card">Household Essentials</li>
+            </ul>
+        </aside>
+
+        <main class="w-3/4 p-6">
+            <div class="neo-card">
+                <h2 class="text-2xl font-bold">Paan Corner</h2>
+                <p>Smoking Accessories, Mints & More</p>
+                <button class="neo-button mt-4">Order Now</button>
+            </div>
+
+            <div class="mt-6 grid grid-cols-3 gap-6">
+                <div class="neo-card text-center">
+                    <img src="pan.png" alt="Product" class="mx-auto">
+                    <p class="mt-2">Fruits & Vegetables</p>
+                </div>
+                <div class="neo-card text-center">
+                    <img src="https://via.placeholder.com/100" alt="Product" class="mx-auto">
+                    <p class="mt-2">Dairy, Bread & Eggs</p>
+                </div>
+                <div class="neo-card text-center">
+                    <img src="https://via.placeholder.com/100" alt="Product" class="mx-auto">
+                    <p class="mt-2">Meat & Fish</p>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

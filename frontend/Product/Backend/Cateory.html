@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Admin - Collections</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet"/>
+    <style>
+        /* === CORE STYLES (Copied & Adapted from admin_add_product.html) === */
+        body {
+            font-family: 'Poppins', sans-serif; background-color: white;
+            &::before { /* Grid Background */
+                --size: 45px; --line: color-mix(in hsl, canvasText, transparent 88%);
+                content: ''; height: 100vh; width: 100vw; position: fixed;
+                background: linear-gradient(90deg,var(--line) 1px,transparent 1px var(--size)) 50% 50%/var(--size) var(--size),linear-gradient(var(--line) 1px,transparent 1px var(--size)) 50% 50%/var(--size) var(--size);
+                mask: linear-gradient(-20deg, transparent 30%, white);
+                top: 0; left: 0; transform-style: flat; pointer-events: none; z-index: -1;
+            }
+        }
+        .text_title { color: rgb(96, 0, 18); font-weight: 700; }
+        .text_mini { color: rgb(7, 0, 84); font-weight: 400; font-size: 0.8rem; }
+
+        /* Sidebar */
+        .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 260px; background-color: #ffffff; border-right: 3px solid black; box-shadow: 5px 0px 15px rgba(0,0,0,0.1); padding-top: 65px; transform: translateX(-100%); transition: transform 0.3s ease-in-out; overflow-y: auto; z-index: 100; &::-webkit-scrollbar { display: none; } -ms-overflow-style: none; scrollbar-width: none; }
+        .sidebar.open { transform: translateX(0); }
+        @media (min-width: 768px) { .sidebar { transform: translateX(0); z-index: 40; } }
+        .sec_cat{ display: block; background: rgb(255, 209, 150); padding: 12px 15px; border: 3px solid black; margin-bottom: 12px; border-radius: 10px; box-shadow: 5px 5px 0px black; font-size: 0.95rem; text-align: center; font-weight: 700; color: #8B4513; transition: all 0.2s ease; cursor: pointer; }
+        .sec_cat:hover, .sec_cat.active { background-color: rgb(155, 88, 0); color: aliceblue; box-shadow: 2px 2px 0px black; transform: translate(3px, 3px); }
+
+        /* Main Content */
+        main { padding: 1rem; padding-top: 75px; width: 100%; transition: margin-left 0.3s ease-in-out; }
+        @media (min-width: 768px) { main { margin-left: 260px; width: calc(100% - 260px); } }
+
+        /* Header */
+        header { background-color: #fff; padding: 0.5rem 1rem; border-bottom: 3px solid black; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; justify-content: space-between; height: 60px; }
+        .header-logo img { height: 40px; width: auto; }
+        .mobile-menu-button { background: none; border: none; color: #8B4513; font-size: 1.6rem; cursor: pointer; padding: 0.5rem; margin-left: -8px;}
+        @media (min-width: 768px) { .mobile-menu-button { display: none; } }
+
+         /* Overlay */
+         #sidebarOverlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.5); z-index: 90; display: none; transition: opacity 0.3s ease-in-out; opacity: 0; }
+         #sidebarOverlay.active { display: block; opacity: 1; }
+
+        /* --- Collections List Specific Styles --- */
+         .page-header-container { /* Like category-header */
+             background: rgb(255, 209, 150); padding: 15px 20px; border: 4px solid black;
+             margin-bottom: 20px; border-radius: 10px; box-shadow: 5px 5px 0px black;
+             display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px;
+         }
+         .page-title { color: rgb(96, 0, 18); font-weight: 700; font-size: 1.4rem; }
+
+         .create-button { /* Like add-product-button */
+            background: #E46C1E; color: white; border: 3px solid black;
+            box-shadow: 4px 4px 0px black; font-weight: 700;
+            padding: 8px 15px; border-radius: 8px; cursor: pointer;
+            transition: all 0.2s ease; font-size: 0.85rem;
+            text-transform: uppercase; white-space: nowrap;
+         }
+         .create-button:hover { background: #bf4f06; box-shadow: 1px 1px 0px black; transform: translate(2px, 2px); }
+
+         /* Filter/Tab Bar */
+         .filter-tab-bar {
+             display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+             margin-bottom: 15px; padding-bottom: 10px;
+             border-bottom: 3px solid #f0e0c4; /* Theme-based separator */
+         }
+          .tab-button {
+             background: #FFF8DC; /* Light background */
+             border: 2px solid black; border-radius: 8px; padding: 6px 12px;
+             font-size: 0.9rem; font-weight: 600; color: #8B4513;
+             box-shadow: 3px 3px 0px black; cursor: pointer; transition: all 0.2s ease;
+         }
+          .tab-button.active, .tab-button:hover {
+             background: #E46C1E; color: white;
+             box-shadow: 1px 1px 0px black; transform: translate(2px, 2px);
+         }
+          .icon-button { /* For search/filter icons */
+              background: #FFF8DC; border: 2px solid black; border-radius: 8px;
+              padding: 8px; line-height: 1; /* Center icon */
+              font-size: 0.9rem; color: #8B4513; box-shadow: 3px 3px 0px black;
+              cursor: pointer; transition: all 0.2s ease;
+          }
+          .icon-button:hover {
+              background: #E46C1E; color: white;
+              box-shadow: 1px 1px 0px black; transform: translate(2px, 2px);
+          }
+          .search-input {
+              background: white; border: 2px solid black; border-radius: 8px;
+              padding: 6px 10px 6px 30px; /* Padding for icon */
+              font-size: 0.9rem; box-shadow: 3px 3px 0px black; position: relative;
+              max-width: 250px; /* Limit width */
+          }
+          .search-input-container { position: relative; }
+          .search-input-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: #8B4513; font-size: 0.9rem;}
+
+         /* Table Styling */
+         .table-container {
+             background-color: white;
+             border: 4px solid black; border-radius: 10px;
+             box-shadow: 5px 5px 0px black;
+             overflow-x: auto; /* Enable horizontal scroll on small screens */
+         }
+         .data-table { width: 100%; border-collapse: collapse; }
+         .data-table thead { background-color: rgb(255, 209, 150); border-bottom: 3px solid black; }
+         .data-table th {
+             padding: 12px 15px; text-align: left; font-weight: 700;
+             font-size: 0.9rem; color: #8B4513; white-space: nowrap;
+         }
+         .data-table tbody tr { border-bottom: 2px solid #f0e0c4; /* Lighter row separator */ }
+         .data-table tbody tr:last-child { border-bottom: none; }
+         .data-table tbody tr:hover { background-color: #fff8ed; } /* Subtle hover */
+         .data-table td { padding: 10px 15px; font-size: 0.95rem; color: #333; vertical-align: middle; white-space: nowrap; }
+         /* Checkbox style */
+         .table-checkbox {
+             height: 18px; width: 18px; border: 2px solid #8B4513; border-radius: 4px;
+             cursor: pointer; appearance: none; /* Hide default */
+             background-color: white; position: relative;
+             vertical-align: middle;
+         }
+         .table-checkbox:checked { background-color: #E46C1E; border-color: black; }
+         .table-checkbox:checked::after { /* Checkmark */
+             content: '\f00c'; /* FontAwesome check */ font-family: 'Font Awesome 6 Free';
+             font-weight: 900; font-size: 12px; color: white;
+             position: absolute; top: 0px; left: 2px;
+         }
+          .collection-title-link {
+             color: #0056b3; /* Standard link blue */
+             font-weight: 600; text-decoration: none;
+             cursor: pointer;
+         }
+          .collection-title-link:hover { text-decoration: underline; color: #E46C1E;}
+
+
+        /* Logout Link */
+        .logout { /* Style copied */ }
+        .logout { color: #8B4513; font-weight: 700; display: block; margin-top: 1.5rem; padding: 0.5rem; transition: color 0.2s ease; text-align: center; font-size: 0.9rem; }
+        .logout:hover { color: #E46C1E; }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <div id="sidebarOverlay"></div>
+
+    <!-- Header (Same as previous pages) -->
+    <header>
+         <button class="mobile-menu-button" id="hamburgerButton" aria-label="Open Menu"><i class="fas fa-bars"></i></button>
+        <a href="admin.html" class="header-logo"><img src="../../img/logo.png" alt="ASAP Logo"></a>
+        <a href="#" class="flex items-center text-orange-600 hover:text-red-700 flex-shrink-0" title="Logout">
+            <i class="fas fa-sign-out-alt text-xl md:text-2xl"></i><span class="ml-1 font-bold text_mini hidden sm:inline">Logout</span>
+        </a>
+    </header>
+
+    <!-- Sidebar (Decide which link is active, maybe Product Management?) -->
+    <aside id="adminSidebar" class="sidebar">
+         <button id="sidebarCloseButton" class="absolute top-2 right-2 text-gray-600 hover:text-black text-2xl p-2 md:hidden" aria-label="Close Menu">×</button>
+         <div class="text-center mb-6 px-2 pt-4">
+             <div class="w-16 h-16 bg-orange-500 rounded-full mx-auto border-2 border-black flex items-center justify-center" style="background-color: #FFD196; box-shadow: 5px 5px 0px black;">
+                <img src="../../icon/user.svg" height="35px" width="35px" alt="Admin Icon">
+            </div>
+             <div class="font-bold text-lg mt-2" style="color: #8B4513;">Hello Admin</div>
+             <div class="text_mini">Manage Collections</div> <!-- Contextual message -->
+         </div>
+         <nav class="px-4">
+            <a class="text_cat" href="admin.html" ><div class="sec_cat">Dashboard</div></a>
+             <a class="text_cat" href="order_man.html"><div class="sec_cat">Order Management</div></a>
+             <!-- Assuming Collections fall under Product Management -->
+             <a class="text_cat" href="product_man.html"><div class="sec_cat active">Product Management</div></a>
+             <a class="text_cat" href="use_man.html"><div class="sec_cat">User Management</div></a>
+             <a class="text_cat" href="delivery_man.html" ><div class="sec_cat">Delivery Partners</div></a>
+             <a class="text_cat" href="Report.html" ><div class="sec_cat">Reports & Analytics</div></a>
+             <a class="text_cat" href="coupon.html" ><div class="sec_cat">Coupons & Promotions</div></a>
+             <a class="text_cat" href="customer.html" ><div class="sec_cat">Customer Support</div></a>
+             <center><a class="logout" href="#">Log Out</a></center>
+         </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main id="mainContent">
+
+        <!-- Page Header -->
+        <div class="page-header-container">
+            <h1 class="page-title">Collections</h1>
+            <!-- Link to Create Collection page -->
+            <a href="createCollection.html" class="create-button">
+                <i class="fas fa-plus mr-1"></i> Create collection
+            </a>
+        </div>
+
+        <!-- Filter/Tab Bar -->
+        <div class="filter-tab-bar">
+            <button class="tab-button active">All</button>
+            <button class="tab-button">+</button> <!-- Placeholder for adding filters -->
+            <div class="ml-auto flex items-center gap-2"> <!-- Push search/filter to right -->
+                 <div class="search-input-container">
+                     <input type="text" placeholder="Search collections..." class="search-input">
+                     <i class="fas fa-search search-input-icon"></i>
+                 </div>
+                 <button class="icon-button" aria-label="Filter/Sort options">
+                     <i class="fas fa-filter"></i>
+                 </button>
+            </div>
+        </div>
+
+        <!-- Collections Table -->
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th class="w-10 text-center"><input type="checkbox" class="table-checkbox" aria-label="Select all collections"></th>
+                        <th>Title</th>
+                        <th>Products</th>
+                        <th>Product conditions</th>
+                    </tr>
+                </thead>
+                <tbody id="collectionsTableBody">
+                    <!-- Example Row 1 (Repeat dynamically with JS) -->
+                    <tr>
+                        <td class="text-center"><input type="checkbox" class="table-checkbox" aria-label="Select collection Men PolyCotton T-shirt"></td>
+                        <td><a href="#" class="collection-title-link">Men PolyCotton T-shirt</a></td>
+                        <td>34</td>
+                        <td>Manual</td>
+                    </tr>
+                    <!-- Example Row 2 -->
+                    <tr>
+                        <td class="text-center"><input type="checkbox" class="table-checkbox" aria-label="Select collection Men's Printed T-shirts"></td>
+                        <td><a href="#" class="collection-title-link">Men's Printed T-shirts</a></td>
+                        <td>30</td>
+                        <td>Tag is equal to 'printed'</td> <!-- Example condition -->
+                    </tr>
+                    <!-- Example Row 3 -->
+                    <tr>
+                         <td class="text-center"><input type="checkbox" class="table-checkbox" aria-label="Select collection Men's Sports Shorts"></td>
+                         <td><a href="#" class="collection-title-link">Men's Sports Shorts</a></td>
+                         <td>4</td>
+                         <td>Manual</td>
+                     </tr>
+                    <!-- Example Row 4 -->
+                     <tr>
+                          <td class="text-center"><input type="checkbox" class="table-checkbox" aria-label="Select collection Mens Oversized T-shirt"></td>
+                          <td><a href="#" class="collection-title-link">Mens Oversized T-shirt</a></td>
+                          <td>45</td>
+                          <td>Type is equal to 'T-shirt' AND Tag is equal to 'oversized'</td>
+                      </tr>
+                    <!-- Example Row 5 -->
+                       <tr>
+                            <td class="text-center"><input type="checkbox" class="table-checkbox" aria-label="Select collection Men"></td>
+                            <td><a href="#" class="collection-title-link">Men</a></td>
+                            <td>78</td>
+                            <td>Title contains 'Men'</td>
+                        </tr>
+                    <!-- Add more rows dynamically here -->
+                </tbody>
+            </table>
+        </div>
+        <!-- Add Pagination if needed -->
+
+    </main>
+
+    <!-- Link shared JS for sidebar -->
+    <script src="createCollection.js"></script>
+    <!-- Add specific JS for this page later if needed -->
+    <!-- <script src="admin_collections.js"></script> -->
+
+</body>
+</html>

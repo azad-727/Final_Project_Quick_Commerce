@@ -1,0 +1,313 @@
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   ASAP
+  </title>
+  <script src="https://cdn.tailwindcss.com">
+  </script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Poppins:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+   body {
+            font-family: 'Poppins', sans-serif;
+            background-image: url("img/bg.jpg");
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+    .poppins {
+        font-family: 'Poppins', sans-serif;
+        color: #E46C1E;
+        font-weight: bold;
+    }
+    .bold-text {
+        font-weight: bold;
+    }
+    .hover-dark {
+        transition: background 0.3s ease, color 0.3s ease;
+    }
+    .hover-dark:hover {
+        background: #E46C1E;
+        color: #fff;
+    }
+    .cart{
+            background: rgb(255, 209, 150);
+            /* padding: 5px; */
+            border: 4px solid black;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 5px 5px 0px black;
+            font-size: larger;
+            text-align: center;
+            width: 50px;
+        }
+        :hover .sec_cat {
+            background-color: rgb(155, 88, 0);
+            color: aliceblue;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        .account {
+            background: rgb(255, 209, 150);
+            padding: 10px;
+            border: 1px solid black;
+            margin-bottom: 2px;
+            border-radius: 10px;
+            box-shadow: 3px 3px 0px black;
+            font-size: larger;
+            text-align: center;
+            width: 50px;
+        }
+        .sec_cat{
+            background: rgb(255, 209, 150);
+            padding: 20px;
+            border: 10px solid black;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 5px 5px 0px black;
+            font-size: larger;
+            text-align: center;
+        }
+        .d1{
+            margin-bottom: 20px;
+            font-size: larger;
+            width: 240px;
+            height: 160px;
+            background: bisque;
+            border: 3px solid black;
+            box-shadow: 8px 8px 0px black;
+            padding: 20px;
+            border-radius: 0;
+        }
+        .d1:hover {
+            padding: 10px;
+            background-color: bisque;
+            color: white;
+            border: 1px solid black;
+            margin-bottom: 20px;
+            border-radius: 0px;
+            box-shadow: 8px 8px 0px black;
+            font-size: larger;
+            width: 240px;
+            height: 160px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+  </style>
+ </head>
+ <body class="bg-white">
+  <header class="p-4 flex justify-between items-center" style="background-color: #FFD196;">
+   <div class="flex items-center">
+    <img alt="ASAP Logo" class="mx-auto mb-4" height="100" src="img/logo.png" width="200"/>
+    
+     
+    <div class="ml-10 text-red-600  text-sm">
+        <p class="text-lg font-bold" id="deliveryETA">
+            Calculating ETA...
+         <i class="fas fa-chevron-down">
+         </i>
+        </p>
+        <div class="text-2xl font-bold text-[#E46C1E] mt-0"></div>
+        <p class="text-sm truncate w-48" id="locationDisplay" style="margin-left: 0%; ">
+            Fetching...
+           </p>
+          </div>
+          
+        
+       </div>
+        
+   </div>
+   <div class="ml-5 w-200 flex items-center">
+    <div class="relative w-105">
+     <input class="pl-10 pr-4 py-2 w-[500px] h-[50px] rounded-[50px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500" placeholder="Search" type="text"/>
+     <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+     </i>
+    </div>
+    </div>
+        <a onclick="profile()"><div class="ml-12 text-red-600 text-sm">
+            <p class="text-lg font-bold"><div class="w-10 h-10 bg-orange-500 rounded-full mx-auto account ">
+                <img src="./icon/user.svg" height="100%" width="100%"></div>
+            Account
+            </p>
+            </div></a>
+            
+                <div id="cartIconContainer" class=relative title="View Cart Page">
+                    <!-- Button: Adjusted width and padding based on when text appears -->
+                    <button class="flex items-center justify-center gap-1>
+                                   px-2 py-2 h-[40px] w-12 rounded-lg    <!-- Smallest screens (icon only) -->
+                                   sm:px-4 sm:h-[50px] sm:w-auto         <!-- Small screens and up (icon + text) -->
+                                   focus:outline-none cart">              <!-- Common styles -->
+            
+                        <!-- Icon: Added flex-shrink-0 -->
+                        <i class="fas fa-shopping-cart text-s`m md:text-base flex-shrink-0"></i>
+            
+                        <!-- Text: Appears at sm: breakpoint -->
+                        <p class="text-xs md:text-sm hidden sm:block whitespace-nowrap"><b>My Cart</b></p>
+            
+                    </button>
+                    <!-- Quick Cart Popup (Hidden by default) -->
+                <div id="quickCartPopup"
+                    class="absolute right-0 top-full mt-2 w-72 md:w-80 bg-white border-2 border-black rounded-lg shadow-[5px_5px_0px_black] z-50 p-4"
+                    style="display: none;">
+                    <h4 class="text-lg font-bold text-[#bf4f06] border-b pb-2 mb-3">Quick Cart</h4>
+                    <div id="quickCartItems" class="max-h-60 overflow-y-auto mb-3">
+                    <!-- Quick cart items will be loaded here -->
+                    <p class="text-center text-gray-500 text-sm">Your cart is empty.</p>
+                    </div>
+                    <div class="border-t pt-3">
+                    <div class="flex justify-between font-bold mb-3">
+                    <span>Subtotal:</span>
+                    <span id="quickCartSubtotal">₹0.00</span>
+                    </div>
+                    <a href="cart.html" class="block w-full text-center bg-[#E46C1E] text-white py-2 px-4 rounded-lg border-2 border-black shadow-[3px_3px_0px_black] hover:bg-[#bf4f06] hover:shadow-[1px_1px_0px_black] hover:translate-x-[2px] hover:translate-y-[2px] transition-all text-sm font-bold">
+                    View Cart & Checkout
+                    </a>
+                    </div>
+                    
+                </div>
+                </div>
+        </div>
+   </header>
+
+
+  <div class="flex" >
+    <aside class="w-1/4 p-4" >
+        <!-- Added id="categoryList" and removed static list items -->
+        <ul id="categoryList" class="space-y-4">
+     <!-- <li class="@apply shadow-[8px_8px_0px_black] border  text-[#bf4f06] py-2 px-4  p-5 rounded-none border-[3px] border-solid border-[black];
+     background: #ffd196; text-center bold-text sec_cat hover-dark">
+      Grocery &amp; Kitchen
+     </li>
+     <li class="@apply shadow-[8px_8px_0px_black] border  text-[#bf4f06] py-2 px-4  p-5 rounded-none border-[3px] border-solid border-[black];
+     background: #ffd196; text-center bold-text sec_cat hover-dark">
+      Snacks &amp; Drinks
+     </li>
+     <li class="@apply shadow-[8px_8px_0px_black] border  text-[#bf4f06] py-2 px-4  p-5 rounded-none border-[3px] border-solid border-[black];
+     background: #ffd196; text-center bold-text sec_cat hover-dark">
+      Beauty &amp; Personal Care
+     </li>
+     <li class="@apply shadow-[8px_8px_0px_black] border  text-[#bf4f06] py-2 px-4  p-5 rounded-none border-[3px] border-solid border-[black];
+     background: #ffd196; text-center bold-text sec_cat hover-dark">
+      Household Essentials
+     </li>
+     <li class="@apply shadow-[8px_8px_0px_black] border  text-[#bf4f06] py-2 px-4  p-5 rounded-none border-[3px] border-solid border-[black];
+     background: #ffd196; text-center bold-text sec_cat hover-dark">
+      Recipe Ideas
+     </li>
+     <li class="@apply shadow-[8px_8px_0px_black] border  text-[#bf4f06] py-2 px-4  p-5 rounded-none border-[3px] border-solid border-[black];
+     background: #ffd196; text-center bold-text sec_cat hover-dark">
+      Mobile Accessories
+     </li>
+     <li class="@apply shadow-[8px_8px_0px_black] border  text-[#bf4f06] py-2 px-4  p-5 rounded-none border-[3px] border-solid border-[black];
+     background: #ffd196; text-center bold-text sec_cat hover-dark">
+      Travel Essentials
+     </li>
+     <li class="@apply shadow-[8px_8px_0px_black] border  text-[#bf4f06] py-2 px-4  p-5 rounded-none border-[3px] border-solid border-[black];
+     background: #ffd196; text-center bold-text sec_cat hover-dark">
+      Eyes Wear
+     </li>
+     <li class="@apply shadow-[8px_8px_0px_black] border  text-[#bf4f06] py-2 px-4  p-5 rounded-none border-[3px] border-solid border-[black];
+     background: #ffd196; text-center bold-text sec_cat hover-dark">
+      Card &amp; Board Games
+     </li>
+     <li class="@apply shadow-[8px_8px_0px_black] border  text-[#bf4f06] py-2 px-4  p-5 rounded-none border-[3px] border-solid border-[black];
+     background: #ffd196; text-center bold-text sec_cat hover-dark">
+      Kids Special
+     </li>
+     <li class="@apply shadow-[8px_8px_0px_black] border  text-[#bf4f06] py-2 px-4  p-5 rounded-none border-[3px] border-solid border-[black];
+     background: #ffd196; text-center bold-text sec_cat hover-dark">
+      ASAP Café
+     </li> -->
+    </ul>
+   </aside>
+   <main class="w-3/4 p-4">
+    <div class="bg-[#ffd196] text-[#bf4f06] rounded-lg  flex items-center justify-between ">
+     <div class="p-4">
+      <h2 class="text-2xl font-bold text-[#bf4f06]">
+       Paan Corner
+      </h2>
+      <p class="text-[#bf4f06]">
+       Smoking Accessories, Mints &amp; More
+      </p>
+      <button class="mt-2 bg-white text-[#bf4f06] py-2 px-4 rounded-full hover-dark" >
+       Order Now
+      </button>
+     </div>
+     <img alt="Paan Corner products"  height="400" src="./img/pan.png" width="500"/>
+    </div>
+    <div class="mt-8">
+     <h3 class="text-xl font-bold text-red-600">
+      Grocery &amp; Kitchen
+     </h3>
+     <div class="grid grid-cols-6  mt-4">
+      
+       
+        <div class="text-center">
+            <img alt="Fruits &amp; Vegetables" class="mx-auto" height="100" src="img/fruits.png" width="130"/>
+      </div>
+      <div class="text-center ">
+       <img alt="Dairy, Bread &amp; Eggs" class="mx-auto" height="50" src="img/Diary.jpeg" width="130"/>
+      </div>
+      <div class="text-center">
+       <img alt="Atta, Rice, Oil &amp; Dals" class="mx-auto" height="50" src="img/Atta.jpeg" width="130"/>
+      </div>
+      <div class="text-center">
+       <img alt="Meat &amp; Fish" class="mx-auto" height="100" src="img/Meat.jpeg" width="130"/>
+      </div>
+      <div class="text-center">
+       <img alt="Masalas &amp; Dry Fruits" class="mx-auto" height="100" src="img/Masala dry fruits.png" width="130"/>
+      </div>
+      <div class="text-center">
+       <img alt="Breakfast &amp; Sauces" class="mx-auto" height="100" src="img/breakfast sauces.jpeg" width="130"/>
+      </div>
+     </div>
+    </div>
+    <div class="mt-8">
+     <h3 class="text-xl font-bold text-red-600">
+      Snacks &amp; Drinks
+     </h3>
+     <div class="grid grid-cols-6 gap-4 mt-4">
+      <!-- <div class="text-center ">
+       <img alt="ASAP Café" class="mx-auto" src="img/cafe.jpg"  height="100" width="180"/>
+       <p class="mt-2 poppins">
+        ASAP Café
+       </p>
+      </div> -->
+      <div class="text-center ">
+       <img alt="Tea &amp; Coffee" class="mx-auto" height="100 " src="img/tea.jpeg" width="130"/>
+       
+      </div>
+      <div class="text-center ">
+       <img alt="Ice cream &amp; More" class="mx-auto" height="100" src="img/ice-cream.png" width="130"/>
+
+      </div>
+      <div class="text-center ">
+       <img alt="Frozen Food" class="mx-auto" height="100" src="img/frozen-food.png" width="130"/>
+       
+      </div>
+      <div class="text-center ">
+       <img alt="Sweet Carving" class="mx-auto" height="100" src="img/sweet cravings.jpeg" width="130"/>
+       
+      </div>
+      <div class="text-center ">
+       <img alt="Cold Drinks &amp; Juices" class="mx-auto" height="100" src="img/cold-drinks.jpeg" width="130"/>
+       
+      </div>
+      <div class="text-center ">
+       <img alt="Munchies" class="mx-auto" height="100" src="img/munchies.jpeg" width="130"/>
+</div>
+     </div>
+    </div>
+   </main>
+  </div>
+  
+  
+  <script src="dashboard.js"></script>
+  <!-- <script src="dashboard-header.js"></script> -->
+  
+  <script src="../Admin/Backend/cartUtils.js"></script>
+  
+  
+  
+  
+ </body>
+</html>

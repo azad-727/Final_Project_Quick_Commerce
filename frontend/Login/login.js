@@ -26,7 +26,7 @@ document.querySelector("#submit").addEventListener("click",function(event){
             console.log("JWT Token:", token);
             localStorage.setItem("token", token); 
             alert("Login successful!");
-            window.location.href = "dashboard.html"; 
+            window.location.href = "dashboard1.html"; 
         } else {
             throw new Error("No token received!");
         }

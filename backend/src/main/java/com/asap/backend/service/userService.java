@@ -28,12 +28,16 @@ private JwtUtil jwtUtil;
 
     // ✅ Save User with Encrypted Password
     public User saveUser(User user) {
-        String hashedPassword = passwordEncoder.encode(user.getPassword());
-        System.out.println("Hashed Password Before Saving: " + hashedPassword);  // Debugging
-        user.setPassword(hashedPassword);
+        if (!user.getPassword().startsWith("$2a$")) {  // "$2a$" is a bcrypt identifier
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+
+        System.out.println("Final Hashed Password Before Saving: " + user.getPassword());  // Debugging
+
         if (user.getRole() == null) {
             user.setRole(Role.USER);
         }
+
         return userRepository.save(user);
     }
     public String forgotPassword(String email) {

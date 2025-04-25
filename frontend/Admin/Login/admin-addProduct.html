@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Admin - Add Product</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/> <!-- Updated FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet"/>
+    <style>
+        /* Core Styles (Adapted from previous version, focus on consistency) */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: white;
+            /* Grid pattern */
+            &::before {
+                --size: 45px; --line: color-mix(in hsl, canvasText, transparent 88%);
+                content: ''; height: 100vh; width: 100vw; position: fixed;
+                background: linear-gradient(90deg,var(--line) 1px,transparent 1px var(--size)) 50% 50%/var(--size) var(--size),linear-gradient(var(--line) 1px,transparent 1px var(--size)) 50% 50%/var(--size) var(--size);
+                mask: linear-gradient(-20deg, transparent 30%, white);
+                top: 0; left: 0; transform-style: flat; pointer-events: none; z-index: -1;
+            }
+        }
+        .text_title { color: rgb(96, 0, 18); font-weight: 700; }
+        .text_mini { color: rgb(7, 0, 84); font-weight: 400; font-size: 0.8rem; } /* Smaller for mobile */
+
+        /* --- Sidebar --- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 260px; /* Fixed width */
+            background-color: #ffffff;
+            border-right: 3px solid black;
+            box-shadow: 5px 0px 15px rgba(0,0,0,0.1);
+            padding-top: 65px; /* Space for header */
+            transform: translateX(-100%); /* Hidden by default */
+            transition: transform 0.3s ease-in-out;
+            overflow-y: auto;
+            z-index: 100; /* High z-index for overlay */
+             /* Hide scrollbar */
+             &::-webkit-scrollbar { display: none; }
+             -ms-overflow-style: none; /* IE and Edge */
+             scrollbar-width: none; /* Firefox */
+        }
+        .sidebar.open {
+            transform: translateX(0);
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            .sidebar {
+                transform: translateX(0); /* Visible by default on md+ */
+                z-index: 40; /* Lower z-index when permanently visible */
+            }
+        }
+
+        .sec_cat{
+            display: block; /* Make anchor/div block */
+            background: rgb(255, 209, 150);
+            padding: 12px 15px; /* Adjusted padding */
+            border: 3px solid black;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            box-shadow: 5px 5px 0px black;
+            font-size: 0.95rem; /* Slightly smaller base size */
+            text-align: center;
+            font-weight: 700;
+            color: #8B4513;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .sec_cat:hover,
+        .sec_cat.active {
+            background-color: rgb(155, 88, 0);
+            color: aliceblue;
+            box-shadow: 2px 2px 0px black;
+            transform: translate(3px, 3px);
+        }
+
+        /* --- Main Content --- */
+        main {
+            padding: 1rem;
+            padding-top: 75px; /* Ensure content below fixed header */
+            width: 100%;
+            transition: margin-left 0.3s ease-in-out;
+        }
+        @media (min-width: 768px) { /* md breakpoint */
+            main {
+                margin-left: 260px; /* Match sidebar width */
+                width: calc(100% - 260px);
+            }
+        }
+
+        /* --- Form Container & Elements --- */
+        .form-container {
+            background: rgb(255, 209, 150);
+            padding: 15px 20px; /* Adjusted padding for mobile */
+            border: 4px solid black;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 5px 5px 0px black;
+        }
+        .form-title {
+             color: rgb(96, 0, 18);
+             font-weight: 700;
+             font-size: 1.3rem; /* Smaller title for mobile */
+             margin-bottom: 1rem;
+             text-align: center;
+        }
+        label {
+            color: #8B4513; font-weight: 600; font-size: 0.85rem;
+            display: block; margin-bottom: 0.25rem;
+        }
+        input[type="text"], input[type="number"], input[type="file"], select, textarea {
+            display: block; width: 100%;
+            background: rgb(255, 255, 255);
+            padding: 8px 12px; /* Smaller padding */
+            border: 3px solid black; border-radius: 8px;
+            box-shadow: 3px 3px 0px black; /* Reduced shadow */
+            font-size: 0.95rem; /* Adjusted font size */
+            margin-bottom: 0.8rem; /* Reduced margin */
+            transition: all 0.2s ease; color: #333;
+        }
+        input:focus, select:focus, textarea:focus {
+             outline: none; border-color: #E46C1E;
+             box-shadow: 1px 1px 0px black, 0 0 0 2px #E46C1E;
+             transform: translate(1px, 1px);
+        }
+        textarea { min-height: 80px; } /* Reduced height */
+
+        /* File Input */
+        input[type="file"] { padding: 0; border: none; background: transparent; box-shadow: none; margin-bottom: 0; }
+        input[type="file"]::file-selector-button {
+            background: rgb(255, 255, 255); color: #8B4513; border: 3px solid black;
+            padding: 8px 12px; border-radius: 8px; cursor: pointer;
+            margin-right: 1rem; margin-bottom: 0.8rem;
+            box-shadow: 3px 3px 0px black; font-weight: 600; font-size: 0.85rem;
+            transition: all 0.2s ease;
+         }
+        input[type="file"]::file-selector-button:hover {
+             background: #E46C1E; color: white; box-shadow: 1px 1px 0px black; transform: translate(2px, 2px);
+        }
+        /* Submit Button */
+        .submit-button {
+            background: #E46C1E; color: white; border: 3px solid black;
+            box-shadow: 5px 5px 0px black; font-weight: 700;
+            padding: 10px 20px; /* Adjusted padding */
+            border-radius: 10px; cursor: pointer; transition: all 0.2s ease;
+            text-transform: uppercase; letter-spacing: 0.5px; font-size: 0.9rem; /* Adjusted size */
+            display: block; /* Full width on mobile */
+            width: 100%;
+            margin-top: 1rem;
+        }
+         @media (min-width: 640px) { /* sm breakpoint */
+             .submit-button {
+                 display: inline-block; /* Back to inline block on larger screens */
+                 width: auto;
+             }
+         }
+         .submit-button:hover { background: #bf4f06; box-shadow: 2px 2px 0px black; transform: translate(3px, 3px); }
+         .submit-button:active { box-shadow: 1px 1px 0px black; transform: translate(4px, 4px); }
+
+         /* Logout Link */
+         .logout { color: #8B4513; font-weight: 700; display: block; margin-top: 1.5rem; padding: 0.5rem; transition: color 0.2s ease; text-align: center; font-size: 0.9rem;}
+         .logout:hover { color: #E46C1E; }
+
+        /* --- Header --- */
+        header {
+            background-color: #fff; padding: 0.5rem 1rem;
+            border-bottom: 3px solid black;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            position: fixed; /* Changed to fixed */
+            top: 0; left: 0; right: 0;
+            z-index: 50; /* Above sidebar default state */
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Space out items */
+            height: 60px; /* Fixed height */
+        }
+        .header-logo img {
+            height: 40px; /* Fixed logo height */
+            width: auto;
+        }
+        .mobile-menu-button {
+             background: none; border: none; color: #8B4513;
+             font-size: 1.6rem; cursor: pointer; padding: 0.5rem;
+             margin-left: -8px; /* Align left */
+        }
+         @media (min-width: 768px) { /* md breakpoint */
+             .mobile-menu-button { display: none; } /* Hide on desktop */
+         }
+
+         /* --- Overlay --- */
+         #sidebarOverlay {
+             position: fixed;
+             top: 0; left: 0; right: 0; bottom: 0;
+             background-color: rgba(0, 0, 0, 0.5);
+             z-index: 90; /* Below sidebar, above content */
+             display: none; /* Hidden by default */
+             transition: opacity 0.3s ease-in-out;
+             opacity: 0;
+         }
+         #sidebarOverlay.active {
+             display: block;
+             opacity: 1;
+         }
+         
+.sidebar {
+  width: 250px;
+  background-color: #fdf1e1;
+  padding: 15px;
+  font-family: 'Poppins', sans-serif;
+}
+
+.menu-item {
+  margin: 10px 0;
+  cursor: pointer;
+  font-weight: bold;
+  border-top:solid 0.25px #fdf1e1 ;
+}
+
+.menu-item a {
+  text-decoration: none;
+  color: #000;
+}
+.submenu_navbox li{
+    margin-top: 5px;
+    align-items: center;
+    left: 5px;
+    font-size: 15px;
+}
+
+.has-submenu .submenu {
+  display: none;
+  margin-top: 5px;
+  padding-left: 15px;
+}
+
+.has-submenu:hover .submenu {
+  display: block;
+}
+
+.submenu li {
+  margin: 5px 0;
+}
+
+.submenu li a {
+  font-weight: normal;
+}
+
+
+    </style>
+</head>
+<body class="overflow-x-hidden"> <!-- Prevent horizontal scroll -->
+
+    <!-- Overlay for Mobile Sidebar -->
+    <div id="sidebarOverlay"></div>
+
+    <!-- Header (Fixed) -->
+    <header>
+         <!-- Hamburger Menu -->
+         <button class="mobile-menu-button" id="hamburgerButton" aria-label="Open Menu">
+            <i class="fas fa-bars"></i>
+         </button>
+
+        <!-- Logo -->
+        <a href="admin.html" class="header-logo">
+            <img src="./img/logo.png" alt="ASAP Logo"> <!-- Ensure path -->
+        </a>
+
+        <!-- Logout (Always Visible, Far Right) -->
+        <a href="#" class="flex items-center text-orange-600 hover:text-red-700 flex-shrink-0" title="Logout">
+            <i class="fas fa-sign-out-alt text-xl md:text-2xl"></i>
+            <span class="ml-1 font-bold text_mini hidden sm:inline" onclick="logout()">Logout</span> <!-- Show text on sm+ -->
+        </a>
+    </header>
+
+    <!-- Sidebar (Toggles on Mobile) -->
+    <aside id="adminSidebar" class="sidebar">
+         <div class="text-center mb-6 px-2">
+             <div class="w-16 h-16 bg-orange-500 rounded-full mx-auto border-2 border-black flex items-center justify-center" style="background-color: #FFD196; box-shadow: 5px 5px 0px black;">
+                <img src="./icon/user.svg" height="35px" width="35px" alt="Admin Icon"> <!-- Ensure path -->
+            </div>
+             <div class="font-bold text-lg mt-2" style="color: #8B4513;">Hello Admin</div>
+             <div class="text_mini">Manage Products</div>
+         </div>
+         <nav class="px-4"> <!-- Padding for nav links -->
+             <a class="text_cat" href="admin-dashboard.html" ><div class="sec_cat">Dashboard</div></a>
+             <a class="text_cat" href="order_man.html"><div class="sec_cat">Order Management</div></a>
+             <div class="menu-item has-submenu">
+             <div class="text_cat sec_cat" onclick="productManagement()">Product Management</div>
+                <ul class="submenu px-3">
+                    <div class="submenu_navbox"><li><a href="admin-addProduct.html"> Add Product</a></li></div>
+                    <div class="submenu_navbox"><li><a href="admin-products.html">View Products</a></li></div>
+                    <div class="submenu_navbox"><li><a href="../Backend/Cateory.html">Collection</a></li></div>
+                  </ul></div>
+             <a class="text_cat" href="use_man.html"><div class="sec_cat">User Management</div></a>
+             <a class="text_cat" href="delivery_man.html" ><div class="sec_cat">Delivery Partners</div></a>
+             <a class="text_cat" href="Report.html" ><div class="sec_cat">Reports & Analytics</div></a>
+             <a class="text_cat" href="coupon.html" ><div class="sec_cat">Coupons & Promotions</div></a>
+             <a class="text_cat" href="customer.html" ><div class="sec_cat">Customer Support</div></a>
+             <center><a class="logout" onclick="logout()">Log Out</a></center>
+         </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main id="mainContent">
+        <div class="form-container">
+            <h1 class="form-title">Add New Product</h1>
+
+            <form id="addProductForm"> <!-- Removed inline onsubmit -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 md:gap-x-6 gap-y-1"> <!-- sm:grid-cols-2 -->
+                     <!-- Column 1 -->
+                     <div>
+                         <div class="mb-3"> <!-- Reduced margin -->
+                             <label for="productName">Product Name <span class="text-red-600">*</span></label>
+                             <input type="text" id="productName" name="name" placeholder="e.g., Fresh Muskmelon" required>
+                         </div>
+                         <div class="mb-3">
+                             <label for="brandName">Brand Name</label>
+                             <input type="text" id="brandName" name="brand" placeholder="e.g., ASAP Farms">
+                         </div>
+                         <div class="mb-3">
+                            <label for="categorySelect">Category <span class="text-red-600">*</span></label>
+                            <!-- REPLACE THE OLD SELECT WITH THIS ONE VVVVV -->
+                            <select id="categorySelect" name="categoryId" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <option value="" disabled selected>Loading categories...</option>
+                                <!-- Options will be populated by JavaScript -->
+                            </select>
+                            <!-- Keep existing input classes -->
+                        </div>
+                          <div class="mb-3">
+                             <label for="sku">SKU (Unique Identifier)</label>
+                             <input type="text" id="sku" name="sku" placeholder="e.g., FRT-MSK-500G">
+                         </div>
+                          <div class="mb-3">
+                             <label for="stock">Stock Qty <span class="text-red-600">*</span></label> <!-- Shorter label -->
+                             <input type="number" id="stock" name="stock" min="0" placeholder="e.g., 100" required>
+                         </div>
+                     </div>
+
+                     <!-- Column 2 -->
+                     <div>
+                         <div class="mb-3">
+                             <label for="variantUnit">Weight/Unit <span class="text-red-600">*</span></label> <!-- Shorter label -->
+                             <input type="text" id="variantUnit" name="unit" placeholder="e.g., 500g, 1 pc" required>
+                         </div>
+                         <div class="mb-3">
+                             <label for="sellingPrice">Selling Price (₹) <span class="text-red-600">*</span></label>
+                             <input type="number" id="sellingPrice" name="price" min="0" step="0.01" placeholder="e.g., 99.00" required>
+                         </div>
+                         <div class="mb-3">
+                             <label for="mrp">MRP (₹)</label>
+                             <input type="number" id="mrp" name="mrp" min="0" step="0.01" placeholder="e.g., 120.00">
+                         </div>
+                          <div class="mb-3">
+                             <label for="deliveryTime">Delivery Time (in Minutes)</label>
+                             <input type="text" id="deliveryTime" name="deliveryTime" placeholder="e.g., 10-15">
+                         </div>
+                         <div class="mb-3">
+                             <label for="shelfLife">Shelf Life (in Days)</label>
+                             <input type="text" id="shelfLife" name="shelfLife" placeholder="e.g., 5">
+                         </div>
+                     </div>
+                </div> <!-- End Grid -->
+
+                <!-- Full Width Fields -->
+                <div class="mt-3 mb-3">
+                     <label for="productImage">Product Image <span class="text-red-600">*</span></label>
+                     <input type="file" id="productImage" name="imageUrl" accept="image/png, image/jpeg, image/webp" required>
+                     <p class="text-xs text-gray-600 mt-1">Square image preferred, < 1MB.</p>
+                </div>
+                <div class="mb-3">
+                     <label for="highlights">Highlights (one per line)</label>
+                     <textarea id="highlights" name="bulletPoint" rows="3" placeholder="Freshly sourced
+Rich in vitamins..."></textarea>
+                </div>
+                <div class="mb-3">
+                     <label for="description">Description</label>
+                     <textarea id="description" name="description" rows="4" placeholder="Detailed product info..."></textarea>
+                </div>
+                <div class="mb-3">
+                     <label for="manufacturer">Manufacturer Details</label>
+                     <textarea id="manufacturer" name="manufacturer" rows="2" placeholder="Mfg by: ABC Pvt Ltd..."></textarea>
+                </div>
+                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-4"> <!-- Grid for last row -->
+                    <div class="mb-3">
+                         <label for="origin">Country of Origin</label>
+                         <input type="text" id="origin" name="origin" placeholder="e.g., India">
+                    </div>
+                    <div class="mb-3">
+                         <label for="tags">Tags (comma-separated)</label>
+                         <input type="text" id="tags" name="tags" placeholder="fruit, melon, fresh">
+                    </div>
+                 </div>
+
+                <div class="mt-4 text-center"> <!-- Adjusted top margin -->
+                      <button type="submit" class="submit-button">
+                          <i class="fas fa-plus-circle mr-2"></i> Add Product
+                      </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Link external JS -->
+    <script src="admin-addProduct.js"></script>
+</body>
+</html>

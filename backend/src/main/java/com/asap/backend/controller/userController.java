@@ -2,8 +2,10 @@ package com.asap.backend.controller;
 
 import com.asap.backend.ResetPasswordRequest;
 import com.asap.backend.dto.UpdateProfileRequest;
+import com.asap.backend.model.Order;
 import com.asap.backend.model.User;
 import com.asap.backend.repository.UserRepository;
+import com.asap.backend.service.OrderService;
 import com.asap.backend.service.emailService;
 import com.asap.backend.service.userService;
 import com.asap.backend.utils.ChangePasswordRequest;
@@ -16,10 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -31,6 +30,8 @@ public class userController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
     @Autowired
+    private OrderService orderService;
+    @Autowired
     private emailService emailService;
 
     @Autowired
@@ -41,6 +42,12 @@ public class userController {
 
     @PostMapping("/add")
     public User addUser(@RequestBody User user) {
+        System.out.println("Received User Data:");
+        System.out.println("Email: " + user.getEmail());
+        System.out.println("Password: " + user.getPassword());
+        System.out.println("Name: " + user.getName());
+        System.out.println("Phone: " + user.getPhone());
+        System.out.println("Role: " + user.getRole());
         return userService.saveUser(user);
     }
 
@@ -62,10 +69,12 @@ public class userController {
         return userService.findByEmail(email);
     }
 
+
     @GetMapping("/profile")
     public ResponseEntity<?> getUserProfile(Authentication authentication) {
         String email = authentication.getName(); // ✅ Extract email from JWT
         Optional<User> user = userRepository.findByEmail(email);
+        System.out.println(email);
 
         if (user.isPresent()) {
             return ResponseEntity.ok(user.get());
@@ -73,6 +82,20 @@ public class userController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
     }
+
+    @DeleteMapping("/delete-account")
+    public ResponseEntity<?> deleteAccount(Authentication authentication) {
+        String email = authentication.getName(); // Get the logged-in user's email
+        Optional<User> userOptional = userRepository.findByEmail(email);
+
+        if (userOptional.isPresent()) {
+            userRepository.delete(userOptional.get());
+            return ResponseEntity.ok("Account deleted successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
+
 
 
     @PostMapping("/set-password")
@@ -168,6 +191,9 @@ public class userController {
         }
 
         User user = userOptional.get();
+        System.out.println("Stored Hashed Password: " + user.getPassword());
+        System.out.println("Entered Old Password: " + request.getOldPassword());
+        System.out.println("Match Result: " + passwordEncoder.matches(request.getOldPassword(), user.getPassword()));
 
         // ✅ Check if the old password is correct
         if (!passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
@@ -178,6 +204,6 @@ public class userController {
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userService.saveUser(user);
 
-        return ResponseEntity.ok("Password changed successfully");
+        return ResponseEntity.ok(Map.of("message", "Password changed successfully"));
     }
 }

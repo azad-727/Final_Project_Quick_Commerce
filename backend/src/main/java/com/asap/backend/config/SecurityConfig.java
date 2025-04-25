@@ -2,6 +2,7 @@ package com.asap.backend.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -55,8 +56,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/users/login", "/api/users/add", "/api/users/forgot-password", "/api/users/set-password", "/api/users/verify-otp").permitAll()
                         // Public access
-                        .requestMatchers("/api/users/protected", "/api/users/profile").authenticated()  // Require authentication
+                        .requestMatchers("/api/users/protected","/api/orders/**", "/api/users/profile").authenticated()  // Require authentication
                         .requestMatchers("/admin/**").hasRole("ADMIN")  // Only ADMIN can access
+                        .requestMatchers(HttpMethod.POST, "/api/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/products").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()  // Allow all users to view products
+                        .requestMatchers(HttpMethod.POST, "/api/orders").authenticated()
+                        // You might need separate rules for GET /api/orders/{id} or GET /api/orders for specific users/roles
+                        .requestMatchers(HttpMethod.GET, "/api/orders/**").authenticated() // Allow authenticated users to get their orders
                         .anyRequest().authenticated()  // ✅ Protect all other endpoints
                 )
                 .authenticationProvider(authenticationProvider())  // ✅ Authentication Provider
